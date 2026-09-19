@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VYBE | Premium Men's Apparel</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo" onclick="switchCategory('all')">VYBE</div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#shop">Shop</a>
+            <a href="#track">Track Order</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        <div class="cart-icon" onclick="toggleCart()">Cart (<span id="cart-count">0</span>)</div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <h1>CRAFTED BEYOND ORDINARY.</h1>
+        <p>Premium Men's Apparel designed for every vibe.</p>
+        <button onclick="scrollToShop()">Explore Collection</button>
+    </section>
+
+    <!-- Category Switcher -->
+    <section id="shop" class="categories">
+        <h2>Select Your Vibe</h2>
+        <div class="category-buttons">
+            <button class="cat-btn" data-cat="everyday" style="--theme: #FF8C00;" onclick="switchCategory('everyday')">Everyday</button>
+            <button class="cat-btn" data-cat="studio" style="--theme: #00BFFF;" onclick="switchCategory('studio')">Studio</button>
+            <button class="cat-btn" data-cat="signature" style="--theme: #8A2BE2;" onclick="switchCategory('signature')">Signature</button>
+        </div>
+    </section>
+
+    <!-- Product Grid -->
+    <section class="products-container">
+        <h2 id="category-title">All Products</h2>
+        <div id="product-grid" class="product-grid">
+            <!-- Products will be injected here via JS -->
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" onclick="toggleCart()">&times;</span>
+            <h2>Your Cart</h2>
+            <div id="cart-items"></div>
+            <div id="cart-total">Total: ₹0</div>
+            <button onclick="checkout()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Order Tracking Section -->
+    <section id="track" class="tracking">
+        <h2>Track Your Order</h2>
+        <input type="text" id="tracking-id" placeholder="Enter Tracking ID">
+        <button onclick="trackOrder()">Track</button>
+        <div id="tracking-result"></div>
+    </section>
+
+    <!-- Footer / Contact / About -->
+    <footer id="about">
+        <div class="footer-content">
+            <div>
+                <h3>About VYBE</h3>
+                <p>We design, stitch, and deliver premium apparel. From everyday wear to signature luxury.</p>
+            </div>
+            <div id="contact">
+                <h3>Contact Us</h3>
+                <p>Email: support@vybe.com</p>
+                <p>Phone: +91 98765 43210</p>
+                <p>Location: Mumbai, India</p>
+            </div>
+        </div>
+        <p class="copyright">&copy; 2026 VYBE Men's Apparel. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
