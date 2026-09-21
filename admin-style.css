@@ -1,0 +1,16 @@
+body { font-family: 'Segoe UI', sans-serif; background: #0f0f0f; color: white; margin: 0; padding: 20px; }
+.hidden { display: none !important; }
+#login-screen { max-width: 400px; margin: 100px auto; text-align: center; background: #1a1a1a; padding: 40px; border-radius: 10px; border: 1px solid #333; }
+input, select { width: 100%; padding: 10px; margin: 10px 0; background: #000; border: 1px solid #444; color: white; border-radius: 5px; }
+button { padding: 10px 20px; background: #8A2BE2; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+button:hover { background: #FF8C00; }
+header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; }
+.tabs { display: flex; gap: 10px; margin: 20px 0; }
+.tabs button { background: #222; }
+.tab-content { background: #1a1a1a; padding: 20px; border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
+th { background: #000; }
+.status-badge { padding: 5px 10px; background: #8A2BE2; border-radius: 20px; font-size: 12px; }
+.category-item, .product-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #222; align-items: center; }
+.btn-danger { background: #ff4444; }
