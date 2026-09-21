@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VYBE Admin Panel</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen">
+        <h2>VYBE Admin Login</h2>
+        <input type="email" id="admin-email" placeholder="Admin Email">
+        <input type="password" id="admin-password" placeholder="Password">
+        <button onclick="adminLogin()">Login</button>
+    </div>
+
+    <!-- Dashboard (Hidden by default) -->
+    <div id="dashboard" class="hidden">
+        <header>
+            <h1>VYBE Control Panel</h1>
+            <button onclick="adminLogout()">Logout</button>
+        </header>
+
+        <div class="tabs">
+            <button onclick="showTab('orders')">Orders</button>
+            <button onclick="showTab('products')">Products</button>
+            <button onclick="showTab('categories')">Categories</button>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="tab-orders" class="tab-content">
+            <h2>All Orders</h2>
+            <table id="orders-table">
+                <thead>
+                    <tr>
+                        <th>Tracking ID</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Products Section -->
+        <div id="tab-products" class="tab-content hidden">
+            <h2>Manage Products</h2>
+            <form id="add-product-form" onsubmit="addProduct(event)">
+                <input type="text" id="prod-name" placeholder="Product Name" required>
+                <input type="number" id="prod-price" placeholder="Price" required>
+                <select id="prod-category" required>
+                    <option value="">Select Category</option>
+                </select>
+                <input type="text" id="prod-image" placeholder="Image URL" required>
+                <button type="submit">Add Product</button>
+            </form>
+            <div id="products-list"></div>
+        </div>
+
+        <!-- Categories Section -->
+        <div id="tab-categories" class="tab-content hidden">
+            <h2>Manage Categories</h2>
+            <form id="add-category-form" onsubmit="addCategory(event)">
+                <input type="text" id="cat-name" placeholder="Category Name (e.g. Summer Wear)" required>
+                <input type="text" id="cat-color" placeholder="Theme Color (e.g. #FF0000)" required>
+                <button type="submit">Add Category</button>
+            </form>
+            <div id="categories-list"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="admin-script.js"></script>
+</body>
+</html>
