@@ -9,7 +9,10 @@ let cart = [];
 
 // 3. Fetch Products from Supabase
 async function fetchProducts() {
-    const { data, error } = await supabase.from('products').select('*, categories(name, slug)');
+    const { data, error } = await supabase
+    .from('products')
+    .select('*, categories!inner(name, slug, is_active)')
+    .eq('categories.is_active', true);
     if (error) {
         console.error('Error fetching products:', error);
         return;
