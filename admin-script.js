@@ -9,15 +9,27 @@ async function adminLogin() {
     const email = document.getElementById('admin-email').value;
     const password = document.getElementById('admin-password').value;
 
+    // Check karein ki keys daali hain ya nahi
+    if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+        alert("Bhai, pehle admin-script.js mein Supabase URL aur Key daalo!");
+        return;
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) return alert("Login Failed: " + error.message);
     
+    if (error) {
+        // Exact error alert mein dikhega
+        alert("Login Failed: " + error.message);
+        console.error("Detailed Error:", error);
+        return;
+    }
+    
+    // Agar login successful
     currentUser = data.user;
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
     loadDashboard();
 }
-
 // 2. Admin Logout
 async function adminLogout() {
     await supabase.auth.signOut();
