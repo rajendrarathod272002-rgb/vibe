@@ -15,7 +15,7 @@ async function adminLogin() {
         return;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     
     if (error) {
         // Exact error alert mein dikhega
@@ -30,15 +30,16 @@ async function adminLogin() {
     document.getElementById('dashboard').classList.remove('hidden');
     loadDashboard();
 }
+
 // 2. Admin Logout
 async function adminLogout() {
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
     window.location.reload();
 }
 
 // 3. Check if already logged in
 async function checkSession() {
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
         currentUser = session.user;
         document.getElementById('login-screen').classList.add('hidden');
@@ -67,7 +68,7 @@ function loadDashboard() {
 
 // --- ORDERS MANAGEMENT ---
 async function loadOrders() {
-    const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
     const tbody = document.querySelector('#orders-table tbody');
     tbody.innerHTML = '';
 
@@ -92,14 +93,14 @@ async function loadOrders() {
 }
 
 async function updateOrderStatus(orderId, newStatus) {
-    const { error } = await supabase.from('orders').update({ status: newStatus }).eq('id', orderId);
+    const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
     if (error) alert("Error updating: " + error.message);
     else alert("Order Status Updated!");
 }
 
 // --- CATEGORY MANAGEMENT ---
 async function loadCategoriesForAdmin() {
-    const { data } = await supabase.from('categories').select('*');
+    const { data } = await supabaseClient.from('categories').select('*');
     const container = document.getElementById('categories-list');
     container.innerHTML = data.map(cat => `
         <div class="category-item">
@@ -115,7 +116,7 @@ async function addCategory(e) {
     const color = document.getElementById('cat-color').value;
     const slug = name.toLowerCase().replace(/ /g, '-');
 
-    const { error } = await supabase.from('categories').insert([{ name, slug, theme_color: color }]);
+    const { error } = await supabaseClient.from('categories').insert([{ name, slug, theme_color: color }]);
     if (error) alert("Error: " + error.message);
     else {
         alert("Category Added!");
@@ -127,13 +128,13 @@ async function addCategory(e) {
 
 async function removeCategory(id) {
     if (!confirm("Are you sure? This will not delete products, but they won't show up.")) return;
-    await supabase.from('categories').update({ is_active: false }).eq('id', id);
+    await supabaseClient.from('categories').update({ is_active: false }).eq('id', id);
     loadCategoriesForAdmin();
 }
 
 // --- PRODUCT MANAGEMENT ---
 async function loadCategoriesForDropdown() {
-    const { data } = await supabase.from('categories').select('*').eq('is_active', true);
+    const { data } = await supabaseClient.from('categories').select('*').eq('is_active', true);
     const select = document.getElementById('prod-category');
     select.innerHTML = '<option value="">Select Category</option>';
     data.forEach(cat => select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`);
@@ -146,7 +147,7 @@ async function addProduct(e) {
     const category_id = parseInt(document.getElementById('prod-category').value);
     const image_url = document.getElementById('prod-image').value;
 
-    const { error } = await supabase.from('products').insert([{ name, price, category_id, image_url }]);
+    const { error } = await supabaseClient.from('products').insert([{ name, price, category_id, image_url }]);
     if (error) alert("Error: " + error.message);
     else {
         alert("Product Added!");
@@ -156,7 +157,7 @@ async function addProduct(e) {
 }
 
 async function loadProductsForAdmin() {
-    const { data } = await supabase.from('products').select('*, categories(name)');
+    const { data } = await supabaseClient.from('products').select('*, categories(name)');
     const container = document.getElementById('products-list');
     container.innerHTML = data.map(prod => `
         <div class="product-item">
@@ -168,7 +169,7 @@ async function loadProductsForAdmin() {
 
 async function removeProduct(id) {
     if (!confirm("Delete this product permanently?")) return;
-    await supabase.from('products').delete().eq('id', id);
+    await supabaseClient.from('products').delete().eq('id', id);
     loadProductsForAdmin();
 }
 
