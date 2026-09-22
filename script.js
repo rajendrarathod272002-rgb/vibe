@@ -213,18 +213,39 @@ function scrollToShop() {
 // Theme Toggle Logic
 function toggleTheme() {
     const body = document.body;
-    const toggleBtn = document.getElementById('theme-toggle');
+    const checkbox = document.getElementById('theme-checkbox');
     
-    body.classList.toggle('light-mode');
-    
-    if (body.classList.contains('light-mode')) {
-        toggleBtn.innerText = '☀️'; // Light mode mein sun icon
+    if (checkbox.checked) {
+        // Light Mode ON
+        body.classList.add('light-mode');
         localStorage.setItem('vybe-theme', 'light');
     } else {
-        toggleBtn.innerText = '🌙'; // Dark mode mein moon icon
+        // Dark Mode ON
+        body.classList.remove('light-mode');
         localStorage.setItem('vybe-theme', 'dark');
     }
 }
+
+// Page load hone par theme check karein
+function loadTheme() {
+    const savedTheme = localStorage.getItem('vybe-theme');
+    const checkbox = document.getElementById('theme-checkbox');
+    
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        if (checkbox) checkbox.checked = true;
+    } else {
+        document.body.classList.remove('light-mode');
+        if (checkbox) checkbox.checked = false;
+    }
+}
+
+// Initialize
+window.onload = () => {
+    loadTheme();       // Theme load karein
+    loadCategories();  // Categories load karein
+    fetchProducts();   // Products load karein
+};
 
 // Page load hone par theme check karein
 function loadTheme() {
