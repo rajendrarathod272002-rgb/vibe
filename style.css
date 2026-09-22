@@ -266,3 +266,24 @@ footer {
     color: #666;
     font-size: 0.9rem;
 }
+.cat-img-btn {
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 200px; /* Aap apne hisaab se size adjust kar sakte hain */
+}
+
+.cat-img-btn img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    transition: 0.3s;
+}
+
+.cat-img-btn:hover img {
+    border-color: var(--primary-cyan); /* Hover karne par cyan border aayega */
+    transform: scale(1.05); /* Thoda sa bada hoga */
+}
