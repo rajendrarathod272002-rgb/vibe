@@ -160,12 +160,39 @@ async function addProduct(e) {
     const name = document.getElementById('prod-name').value;
     const price = parseFloat(document.getElementById('prod-price').value);
     const category_id = parseInt(document.getElementById('prod-category').value);
-    const image_url = document.getElementById('prod-image').value;
+    const fileInput = document.getElementById('prod-image-file');
+    let image_url = document.getElementById('prod-image').value; // Manual URL fallback
 
+    const submitBtn = document.querySelector('#add-product-form button[type="submit"]');
+
+    // Agar file select ki gayi hai, toh pehle upload karein
+    if (fileInput.files.length > 0) {
+        try {
+            submitBtn.innerText = "Uploading Image...";
+            submitBtn.disabled = true;
+
+            image_url = await uploadImage(fileInput.files[0]);
+
+            submitBtn.innerText = "Add Product";
+            submitBtn.disabled = false;
+        } catch (err) {
+            alert("Image Upload Failed: " + err.message);
+            submitBtn.innerText = "Add Product";
+            submitBtn.disabled = false;
+            return;
+        }
+    }
+
+    if (!image_url) {
+        return alert("Bhai, koi image upload karein ya URL daalein!");
+    }
+
+    // Database mein product insert karein
     const { error } = await supabaseClient.from('products').insert([{ name, price, category_id, image_url }]);
-    if (error) alert("Error: " + error.message);
-    else {
-        alert("Product Added!");
+    if (error) {
+        alert("Error: " + error.message);
+    } else {
+        alert("Product Added Successfully!");
         document.getElementById('add-product-form').reset();
         loadProductsForAdmin();
     }
