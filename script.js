@@ -7,6 +7,7 @@ const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let allProducts = [];
 let cart = [];
 // Categories ko dynamically load karne ke liye
+// Categories ko dynamically load karne ke liye
 async function loadCategories() {
     const { data, error } = await supabase.from('categories').select('*').eq('is_active', true);
     if (error) {
@@ -15,8 +16,6 @@ async function loadCategories() {
     }
     
     const container = document.getElementById('category-buttons');
-    
-    // "All" button bhi add karein taaki saare products dikh sakein
     let buttonsHTML = `<button class="cat-btn" onclick="switchCategory('all')">All Products</button>`;
     
     data.forEach(cat => {
