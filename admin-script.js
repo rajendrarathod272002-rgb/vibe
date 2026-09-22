@@ -135,7 +135,26 @@ async function loadCategoriesForDropdown() {
     select.innerHTML = '<option value="">Select Category</option>';
     data.forEach(cat => select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`);
 }
+// Image Upload Function (Supabase Storage ke liye)
+async function uploadImage(file) {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `${fileName}`;
 
+    // Upload to Supabase Storage
+    const { data, error } = await supabaseClient.storage
+        .from('product-images')
+        .upload(filePath, file);
+
+    if (error) throw error;
+
+    // Get Public URL
+    const { data: urlData } = supabaseClient.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+    return urlData.publicUrl;
+}
 async function addProduct(e) {
     e.preventDefault();
     const name = document.getElementById('prod-name').value;
