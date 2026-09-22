@@ -9,7 +9,6 @@ async function adminLogin() {
     const email = document.getElementById('admin-email').value;
     const password = document.getElementById('admin-password').value;
 
-    // Check karein ki keys daali hain ya nahi
     if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
         alert("Bhai, pehle admin-script.js mein Supabase URL aur Key daalo!");
         return;
@@ -18,13 +17,11 @@ async function adminLogin() {
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     
     if (error) {
-        // Exact error alert mein dikhega
         alert("Login Failed: " + error.message);
         console.error("Detailed Error:", error);
         return;
     }
     
-    // Agar login successful
     currentUser = data.user;
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
@@ -114,30 +111,19 @@ async function addCategory(e) {
     e.preventDefault();
     const name = document.getElementById('cat-name').value;
     const color = document.getElementById('cat-color').value;
-    const image_url = document.getElementById('cat-image').value; // Yeh nayi line add karein
+    const image_url = document.getElementById('cat-image').value; // Image URL
     const slug = name.toLowerCase().replace(/ /g, '-');
 
     const { error } = await supabaseClient.from('categories').insert([{ 
-        name, slug, theme_color: color, image_url: image_url // image_url yahan add karein
+        name: name, 
+        slug: slug, 
+        theme_color: color, 
+        image_url: image_url 
     }]);
     
-    if (error) alert("Error: " + error.message);
-    else {
-        alert("Category Added!");
-        document.getElementById('add-category-form').reset();
-        loadCategoriesForAdmin();
-        loadCategoriesForDropdown();
-    }
-}
-}gory(e) {
-    e.preventDefault();
-    const name = document.getElementById('cat-name').value;
-    const color = document.getElementById('cat-color').value;
-    const slug = name.toLowerCase().replace(/ /g, '-');
-
-    const { error } = await supabaseClient.from('categories').insert([{ name, slug, theme_color: color }]);
-    if (error) alert("Error: " + error.message);
-    else {
+    if (error) {
+        alert("Error: " + error.message);
+    } else {
         alert("Category Added!");
         document.getElementById('add-category-form').reset();
         loadCategoriesForAdmin();
