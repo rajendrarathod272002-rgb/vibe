@@ -18,14 +18,26 @@ async function loadCategories() {
     }
     
     const container = document.getElementById('category-buttons');
+    
+    // "All Products" button (Text wala)
     let buttonsHTML = `<button class="cat-btn" onclick="switchCategory('all')">All Products</button>`;
     
     data.forEach(cat => {
-        buttonsHTML += `
-            <button class="cat-btn" data-cat="${cat.slug}" style="--theme: ${cat.theme_color};" onclick="switchCategory('${cat.slug}')">
-                ${cat.name}
-            </button>
-        `;
+        // Agar category ka image URL hai, toh Image Button banayein
+        if (cat.image_url) {
+            buttonsHTML += `
+                <div class="cat-img-btn" onclick="switchCategory('${cat.slug}')">
+                    <img src="${cat.image_url}" alt="${cat.name}">
+                </div>
+            `;
+        } else {
+            // Agar image nahi hai, toh purana Text Button dikhayein
+            buttonsHTML += `
+                <button class="cat-btn" data-cat="${cat.slug}" style="--theme: ${cat.theme_color};" onclick="switchCategory('${cat.slug}')">
+                    ${cat.name}
+                </button>
+            `;
+        }
     });
     
     container.innerHTML = buttonsHTML;
