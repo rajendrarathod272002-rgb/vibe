@@ -33,7 +33,7 @@ header {
     border-bottom: 1px solid #333;
 }
 .main-logo-img {
-    height: 50px; /* Apne hisaab se adjust karein */
+    height: 100px; /* Apne hisaab se adjust karein */
     width: auto;
     object-fit: contain;
 }
