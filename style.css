@@ -387,12 +387,16 @@ footer {
 /* =========================================
    PREMIUM THEME TOGGLE SWITCH
    ========================================= */
+/* =========================================
+   PREMIUM THEME TOGGLE SWITCH (FIXED)
+   ========================================= */
 .theme-switch {
     position: relative;
     display: inline-block;
-    width: 65px;
-    height: 34px;
-    margin-right: 15px;
+    width: 70px;  /* Thoda bada kiya */
+    height: 36px; 
+    margin-right: 20px;
+    vertical-align: middle;
 }
 
 .theme-switch input {
@@ -405,25 +409,25 @@ footer {
     position: absolute;
     cursor: pointer;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(145deg, #1a1a1a, #0a0a0a); /* Dark metallic */
-    border: 1px solid #333;
+    background: #1a1a1a; /* Dark background */
+    border: 1px solid #444;
     transition: 0.4s;
     border-radius: 34px;
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.6);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 6px;
+    padding: 0 8px; /* Icons ko jagah dene ke liye */
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 26px;
-    width: 26px;
+    height: 28px;
+    width: 28px;
     left: 3px;
     bottom: 3px;
-    background: linear-gradient(145deg, #ffffff, #d4d4d4);
+    background: #ffffff;
     transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0,0,0,0.4);
@@ -432,19 +436,19 @@ footer {
 
 /* Light Mode State */
 input:checked + .slider {
-    background: linear-gradient(145deg, #e0e0e0, #ffffff);
+    background: #e0e0e0; /* Light background */
     border-color: #ccc;
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
 }
 
 input:checked + .slider:before {
-    transform: translateX(31px); /* Knob slides to right */
-    background: linear-gradient(145deg, #1a1a1a, #333);
+    transform: translateX(34px); /* Knob right slide karega */
+    background: #1a1a1a;
 }
 
 /* Icons */
 .icon {
-    font-size: 15px;
+    font-size: 16px;
     z-index: 1;
     transition: 0.4s;
 }
@@ -461,6 +465,10 @@ input:checked + .slider:before {
 
 input:checked + .slider .sun-icon {
     opacity: 1;
+}
+
+input:checked + .slider .moon-icon {
+    opacity: 0.4;
 }
 
 input:checked + .slider .moon-icon {
