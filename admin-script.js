@@ -114,6 +114,25 @@ async function addCategory(e) {
     e.preventDefault();
     const name = document.getElementById('cat-name').value;
     const color = document.getElementById('cat-color').value;
+    const image_url = document.getElementById('cat-image').value; // Yeh nayi line add karein
+    const slug = name.toLowerCase().replace(/ /g, '-');
+
+    const { error } = await supabaseClient.from('categories').insert([{ 
+        name, slug, theme_color: color, image_url: image_url // image_url yahan add karein
+    }]);
+    
+    if (error) alert("Error: " + error.message);
+    else {
+        alert("Category Added!");
+        document.getElementById('add-category-form').reset();
+        loadCategoriesForAdmin();
+        loadCategoriesForDropdown();
+    }
+}
+}gory(e) {
+    e.preventDefault();
+    const name = document.getElementById('cat-name').value;
+    const color = document.getElementById('cat-color').value;
     const slug = name.toLowerCase().replace(/ /g, '-');
 
     const { error } = await supabaseClient.from('categories').insert([{ name, slug, theme_color: color }]);
