@@ -32,6 +32,11 @@ header {
     z-index: 100;
     border-bottom: 1px solid #333;
 }
+.main-logo-img {
+    height: 50px; /* Apne hisaab se adjust karein */
+    width: auto;
+    object-fit: contain;
+}
 
 .logo {
     font-size: 28px;
