@@ -213,20 +213,18 @@ function scrollToShop() {
 // Theme Toggle Logic
 function toggleTheme() {
     const body = document.body;
-    const checkbox = document.getElementById('theme-checkbox');
+    const checkbox = document.getElementById('theme-checkbox'); // Naya checkbox ID
     
-    if (checkbox.checked) {
-        // Light Mode ON
+    if (checkbox && checkbox.checked) {
         body.classList.add('light-mode');
         localStorage.setItem('vybe-theme', 'light');
     } else {
-        // Dark Mode ON
         body.classList.remove('light-mode');
         localStorage.setItem('vybe-theme', 'dark');
     }
 }
 
-// Page load hone par theme check karein
+// Page load hone par theme check karein (BINA KISI ERROR KE)
 function loadTheme() {
     const savedTheme = localStorage.getItem('vybe-theme');
     const checkbox = document.getElementById('theme-checkbox');
@@ -237,27 +235,6 @@ function loadTheme() {
     } else {
         document.body.classList.remove('light-mode');
         if (checkbox) checkbox.checked = false;
-    }
-}
-
-// Initialize
-window.onload = () => {
-    loadTheme();       // Theme load karein
-    loadCategories();  // Categories load karein
-    fetchProducts();   // Products load karein
-};
-
-// Page load hone par theme check karein
-function loadTheme() {
-    const savedTheme = localStorage.getItem('vybe-theme');
-    const toggleBtn = document.getElementById('theme-toggle');
-    
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-        toggleBtn.innerText = '☀️';
-    } else {
-        document.body.classList.remove('light-mode');
-        toggleBtn.innerText = '🌙';
     }
 }
 
