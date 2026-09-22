@@ -96,16 +96,7 @@ async function updateOrderStatus(orderId, newStatus) {
 }
 
 // --- CATEGORY MANAGEMENT ---
-async function loadCategoriesForAdmin() {
-    const { data } = await supabaseClient.from('categories').select('*');
-    const container = document.getElementById('categories-list');
-    container.innerHTML = data.map(cat => `
-        <div class="category-item">
-            <span>${cat.name} (${cat.slug})</span>
-            <button onclick="removeCategory(${cat.id})" class="btn-danger">Remove</button>
-        </div>
-    `).join('');
-}
+loadCategoriesForAdmin
 
 async function addCategory(e) {
     e.preventDefault();
