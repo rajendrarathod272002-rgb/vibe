@@ -7,7 +7,12 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // 2. State
 let allProducts = [];
-let cart = [];
+// Cart ko localStorage se load karein
+let cart = JSON.parse(localStorage.getItem('vybe-cart')) || [];
+
+function saveCart() {
+    localStorage.setItem('vybe-cart', JSON.stringify(cart));
+}
 
 // 3. Categories ko dynamically load karne ke liye
 async function loadCategories() {
