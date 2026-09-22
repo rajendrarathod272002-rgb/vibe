@@ -1,14 +1,17 @@
-// 1. Supabase Configuration (Apna URL aur Key yahan daalein)
+// 1. Supabase Configuration
 const SUPABASE_URL = 'https://xvgzbauxaqfkqfqslker.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2Z3piYXV4YXFma3FmcXNsa2VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MjU2MjMsImV4cCI6MjEwNTQwMTYyM30.FeEjPqSu0Rm8A7lt3qrixNkEVrsQNwlstDumLZaJDlM';
+
+// Yahan 'supabaseClient' naam use kiya hai taaki conflict na ho
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 // 2. State
 let allProducts = [];
 let cart = [];
-// Categories ko dynamically load karne ke liye
-// Categories ko dynamically load karne ke liye
+
+// 3. Categories ko dynamically load karne ke liye
 async function loadCategories() {
-    const { data, error } = await supabase.from('categories').select('*').eq('is_active', true);
+    const { data, error } = await supabaseClient.from('categories').select('*').eq('is_active', true);
     if (error) {
         console.error('Error fetching categories:', error);
         return;
@@ -27,12 +30,14 @@ async function loadCategories() {
     
     container.innerHTML = buttonsHTML;
 }
-// 3. Fetch Products from Supabase
+
+// 4. Fetch Products from Supabase
 async function fetchProducts() {
-    const { data, error } = await supabase
-    .from('products')
-    .select('*, categories!inner(name, slug, is_active)')
-    .eq('categories.is_active', true);
+    const { data, error } = await supabaseClient
+        .from('products')
+        .select('*, categories!inner(name, slug, is_active)')
+        .eq('categories.is_active', true);
+        
     if (error) {
         console.error('Error fetching products:', error);
         return;
@@ -41,7 +46,7 @@ async function fetchProducts() {
     renderProducts('all');
 }
 
-// 4. Render Products (Category Filter ke saath)
+// 5. Render Products (Category Filter ke saath)
 function renderProducts(categorySlug) {
     const grid = document.getElementById('product-grid');
     const title = document.getElementById('category-title');
@@ -54,7 +59,7 @@ function renderProducts(categorySlug) {
         
         // Theme change logic
         const themeColors = { everyday: '#FF8C00', studio: '#00BFFF', signature: '#8A2BE2' };
-        document.documentElement.style.setProperty('--primary-purple', themeColors[categorySlug]);
+        document.documentElement.style.setProperty('--primary-purple', themeColors[categorySlug] || '#8A2BE2');
     } else {
         title.innerText = "All Products";
     }
@@ -69,17 +74,17 @@ function renderProducts(categorySlug) {
     `).join('');
 }
 
-// 5. Category Switcher
+// 6. Category Switcher
 function switchCategory(cat) {
-    // Update active button styling
     document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
     if(cat !== 'all') {
-        document.querySelector(`.cat-btn[data-cat="${cat}"]`).classList.add('active');
+        const activeBtn = document.querySelector(`.cat-btn[data-cat="${cat}"]`);
+        if(activeBtn) activeBtn.classList.add('active');
     }
     renderProducts(cat);
 }
 
-// 6. Cart Logic
+// 7. Cart Logic
 function addToCart(id, name, price) {
     const existing = cart.find(item => item.id === id);
     if (existing) {
@@ -121,7 +126,7 @@ function renderCartItems() {
     totalDiv.innerText = `Total: ₹${total}`;
 }
 
-// 7. Checkout (Simplified for MVP)
+// 8. Checkout
 async function checkout() {
     if (cart.length === 0) return alert("Cart is empty!");
 
@@ -135,7 +140,7 @@ async function checkout() {
     const trackingId = 'VYBE' + Math.floor(Math.random() * 1000000);
 
     // Insert Order
-    const { data: orderData, error: orderError } = await supabase
+    const { data: orderData, error: orderError } = await supabaseClient
         .from('orders')
         .insert([{ customer_name: name, customer_email: email, customer_address: address, total_amount: totalAmount, tracking_id: trackingId }])
         .select();
@@ -152,7 +157,7 @@ async function checkout() {
         price: item.price
     }));
 
-    await supabase.from('order_items').insert(orderItems);
+    await supabaseClient.from('order_items').insert(orderItems);
 
     alert(`Order Placed Successfully! Your Tracking ID is: ${trackingId}`);
     cart = [];
@@ -160,14 +165,14 @@ async function checkout() {
     toggleCart();
 }
 
-// 8. Order Tracking
+// 9. Order Tracking
 async function trackOrder() {
     const trackingId = document.getElementById('tracking-id').value;
     const resultDiv = document.getElementById('tracking-result');
 
     if (!trackingId) return alert("Please enter Tracking ID");
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('orders')
         .select('*')
         .eq('tracking_id', trackingId)
