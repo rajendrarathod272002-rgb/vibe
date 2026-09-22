@@ -245,7 +245,14 @@ function loadTheme() {
 
 // Initialize
 window.onload = () => {
-    loadTheme();       // Theme load karein
-    loadCategories();  // Categories load karein
-    fetchProducts();   // Products load karein
+    loadTheme();
+    updateCartCount(); // Cart count har page par dikhega
+    
+    // Sirf Shop page par yeh chalega
+    if (document.getElementById('category-buttons')) {
+        loadCategories();
+    }
+    if (document.getElementById('product-grid')) {
+        fetchProducts();
+    }
 };
