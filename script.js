@@ -6,7 +6,29 @@ const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // 2. State
 let allProducts = [];
 let cart = [];
-
+// Categories ko dynamically load karne ke liye
+async function loadCategories() {
+    const { data, error } = await supabase.from('categories').select('*').eq('is_active', true);
+    if (error) {
+        console.error('Error fetching categories:', error);
+        return;
+    }
+    
+    const container = document.getElementById('category-buttons');
+    
+    // "All" button bhi add karein taaki saare products dikh sakein
+    let buttonsHTML = `<button class="cat-btn" onclick="switchCategory('all')">All Products</button>`;
+    
+    data.forEach(cat => {
+        buttonsHTML += `
+            <button class="cat-btn" data-cat="${cat.slug}" style="--theme: ${cat.theme_color};" onclick="switchCategory('${cat.slug}')">
+                ${cat.name}
+            </button>
+        `;
+    });
+    
+    container.innerHTML = buttonsHTML;
+}
 // 3. Fetch Products from Supabase
 async function fetchProducts() {
     const { data, error } = await supabase
@@ -173,4 +195,7 @@ function scrollToShop() {
 }
 
 // Initialize
-window.onload = fetchProducts;
+window.onload = () => {
+    loadCategories();
+    fetchProducts();
+};
