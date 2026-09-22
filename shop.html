@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop | VYBE</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo"><img src="YOUR_MAIN_LOGO_URL" alt="VYBE" class="main-logo-img"></a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="track.html">Track Order</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+        <div class="header-actions">
+            <label class="theme-switch" for="theme-checkbox">
+                <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()" />
+                <div class="slider round"><span class="icon sun-icon">☀</span><span class="icon moon-icon">☾</span></div>
+            </label>
+            <div class="cart-icon" onclick="toggleCart()">Cart (<span id="cart-count">0</span>)</div>
+        </div>
+    </header>
+
+    <section class="categories">
+        <h2>Select Your Vibe</h2>
+        <div class="category-buttons" id="category-buttons"></div>
+    </section>
+
+    <section class="products-container">
+        <h2 id="category-title">All Products</h2>
+        <div id="product-grid" class="product-grid"></div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" onclick="toggleCart()">&times;</span>
+            <h2>Your Cart</h2>
+            <div id="cart-items"></div>
+            <div id="cart-total">Total: ₹0</div>
+            <button onclick="checkout()">Proceed to Checkout</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
