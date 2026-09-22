@@ -477,72 +477,24 @@ input:checked + .slider .moon-icon {
 /* =========================================
    PROFESSIONAL MOBILE RESPONSIVE DESIGN
    ========================================= */
+/* =========================================
+   PROFESSIONAL MOBILE RESPONSIVE DESIGN
+   ========================================= */
 @media (max-width: 768px) {
-    /* Header ko stack karein */
     header {
         flex-direction: column;
         padding: 15px;
         gap: 15px;
     }
-    
-    .logo {
-        justify-content: center;
-        width: 100%;
-    }
-    
-    /* Navigation links ko wrap karein */
-    nav {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-        width: 100%;
-    }
-    
-    nav a {
-        font-size: 0.9rem;
-    }
-    
-    .header-actions {
-        justify-content: center;
-        width: 100%;
-        gap: 20px;
-    }
-    
-    /* Hero section chhota karein */
-    .hero {
-        min-height: 40vh;
-        padding: 30px 15px;
-    }
-    
-    .hero h1 {
-        font-size: 1.8rem;
-    }
-    
-    /* Categories ko vertical karein */
-    .category-buttons {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-    
-    .cat-img-btn {
-        width: 100%;
-        max-width: 280px;
-    }
-    
-    /* Products ko 1 column mein dikhayein */
-    .product-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .product-card img {
-        height: 300px;
-    }
-    
-    /* Footer ko center karein */
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-    }
+    .logo { justify-content: center; width: 100%; }
+    nav { flex-wrap: wrap; justify-content: center; gap: 15px; width: 100%; }
+    nav a { font-size: 0.9rem; }
+    .header-actions { justify-content: center; width: 100%; gap: 20px; }
+    .hero { min-height: 40vh; padding: 30px 15px; }
+    .hero h1 { font-size: 1.8rem; }
+    .category-buttons { flex-direction: column; align-items: center; gap: 15px; }
+    .cat-img-btn { width: 100%; max-width: 280px; }
+    .product-grid { grid-template-columns: 1fr; gap: 20px; }
+    .product-card img { height: 300px; }
+    .footer-content { flex-direction: column; text-align: center; }
 }
