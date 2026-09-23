@@ -236,18 +236,27 @@ async function loadBanners() {
     const container = document.getElementById('banner-carousel');
     if (!container) return;
     const { data } = await supabaseClient.from('banners').select('*').eq('is_active', true).order('sort_order');
-    if (!data || data.length === 0) return;
+    
+    if (!data || data.length === 0) {
+        // Fallback: agar koi banner nahi hai toh hero section dikhao
+        return;
+    }
     
     container.innerHTML = data.map((b, i) => `
-        <div class="banner-slide ${i === 0 ? 'active' : ''}">
-            ${b.link ? `<a href="${b.link}">` : ''}
+        <div class="banner-slide ${i === 0 ? 'active' : ''}" style="position:relative;">
             <img src="${b.image_url}" alt="${b.title || 'Banner'}">
-            ${b.link ? '</a>' : ''}
+            ${b.title ? `
+                <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,0.7),rgba(0,0,0,0.2));display:flex;flex-direction:column;justify-content:center;padding:0 8%;color:#fff;">
+                    <h1 style="font-size:2.5rem;margin-bottom:10px;color:#fff;background:none;-webkit-text-fill-color:#fff;">${b.title}</h1>
+                    ${b.subtitle ? `<p style="font-size:1.1rem;color:#ddd;">${b.subtitle}</p>` : ''}
+                    ${b.link ? `<a href="${b.link}" style="display:inline-block;margin-top:20px;padding:12px 30px;background:#8A2BE2;color:#fff;border-radius:30px;font-weight:700;width:fit-content;text-decoration:none;">Shop Now</a>` : ''}
+                </div>
+            ` : ''}
         </div>
     `).join('') + `<div class="banner-dots">${data.map((_, i) => `<span class="${i === 0 ? 'active' : ''}" onclick="showBanner(${i})"></span>`).join('')}</div>`;
     
     let current = 0;
-    setInterval(() => { current = (current + 1) % data.length; showBanner(current); }, 4000);
+    setInterval(() => { current = (current + 1) % data.length; window.showBanner(current); }, 5000);
     window.showBanner = (i) => {
         current = i;
         document.querySelectorAll('.banner-slide').forEach((s, idx) => s.classList.toggle('active', idx === i));
