@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | VYBE</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo"><img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img"></a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="track.html">Track</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+        <div class="header-actions">
+            <label class="theme-switch" for="theme-checkbox">
+                <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()" />
+                <div class="slider round"><span class="icon sun-icon">☀</span><span class="icon moon-icon">☾</span></div>
+            </label>
+            <div class="cart-icon" onclick="window.location.href='shop.html'">🛒 Cart (<span id="cart-count">0</span>)</div>
+        </div>
+    </header>
+
+    <div class="account-page">
+        <div class="account-header">
+            <div>
+                <h1 style="margin-bottom:5px;" id="account-name">My Account</h1>
+                <p style="color:var(--muted);" id="account-email"></p>
+            </div>
+            <button onclick="logoutUser()" style="padding:10px 20px;background:transparent;border:1px solid var(--border-color);color:var(--text-color);border-radius:8px;cursor:pointer;">Logout</button>
+        </div>
+        
+        <div class="account-tabs">
+            <button class="active" onclick="showAccountTab('orders', this)">My Orders</button>
+            <button onclick="showAccountTab('profile', this)">Profile</button>
+        </div>
+        
+        <div id="tab-orders">
+            <div id="orders-list"></div>
+        </div>
+        
+        <div id="tab-profile" class="hidden">
+            <div class="checkout-form" style="max-width:500px;">
+                <input type="text" id="prof-name" placeholder="Full Name">
+                <input type="tel" id="prof-phone" placeholder="Mobile Number">
+                <input type="email" id="prof-email" placeholder="Email" disabled style="opacity:0.6;">
+                <button onclick="saveProfile()" class="place-order-btn" style="margin-top:10px;">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+    async function loadAccountData() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) {
+            alert('Please login first');
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        const { data: prof } = await supabaseClient.from('profiles').select('*').eq('id', session.user.id).single();
+        document.getElementById('account-name').innerText = prof?.full_name || 'My Account';
+        document.getElementById('account-email').innerText = session.user.email || '';
+        document.getElementById('prof-name').value = prof?.full_name || '';
+        document.getElementById('prof-phone').value = prof?.phone || '';
+        document.getElementById('prof-email').value = session.user.email || '';
+        
+        const { data: orders } = await supabaseClient.from('orders').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false });
+        
+        const list = document.getElementById('orders-list');
+        if (!orders || orders.length === 0) {
+            list.innerHTML = '<div class="empty-state"><h3>No orders yet</h3><p>Start shopping to see your orders here</p><a href="shop.html" style="color:var(--primary-purple);font-weight:700;">Shop Now →</a></div>';
+        } else {
+            list.innerHTML = orders.map(o => `
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <div><strong>Order: ${o.tracking_id}</strong><br><small style="color:var(--muted);">${new Date(o.created_at).toLocaleDateString()}</small></div>
+                        <span class="status-badge">${o.status}</span>
+                    </div>
+                    <p style="color:var(--muted);font-size:0.9rem;">Total: ₹${o.total_amount} • Payment: ${o.payment_method || 'COD'}</p>
+                    <p style="color:var(--muted);font-size:0.85rem;margin-top:5px;">Delivering to: ${o.customer_address}, ${o.customer_city} - ${o.customer_pincode}</p>
+                </div>
+            `).join('');
+        }
+    }
+    
+    function showAccountTab(tab, el) {
+        document.querySelectorAll('.account-tabs button').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('tab-orders').classList.toggle('hidden', tab !== 'orders');
+        document.getElementById('tab-profile').classList.toggle('hidden', tab !== 'profile');
+    }
+    
+    async function saveProfile() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) return;
+        await supabaseClient.from('profiles').update({
+            full_name: document.getElementById('prof-name').value,
+            phone: document.getElementById('prof-phone').value
+        }).eq('id', session.user.id);
+        showToast('Profile saved!');
+    }
+    
+    loadAccountData();
+    </script>
+</body>
+</html>
