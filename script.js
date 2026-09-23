@@ -82,6 +82,35 @@ function applyFilters() {
     // Render filtered products
     renderFilteredProducts(filtered);
 }
+let currentDetailProduct = null;
+
+function showProductDetails(productId) {
+    const product = allProducts.find(p => p.id === productId);
+    if (!product) return;
+    
+    currentDetailProduct = product;
+    
+    document.getElementById('detail-main-img').src = product.image_url;
+    document.getElementById('detail-name').innerText = product.name;
+    document.getElementById('detail-price').innerText = '₹' + product.price;
+    document.getElementById('detail-desc').innerText = product.description || 'Premium quality men\'s apparel from VYBE.';
+    
+    document.getElementById('product-detail-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Background scroll band karein
+}
+
+function closeProductModal() {
+    document.getElementById('product-detail-modal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    currentDetailProduct = null;
+}
+
+function addToCartFromDetail() {
+    if (currentDetailProduct) {
+        addToCart(currentDetailProduct.id, currentDetailProduct.name, currentDetailProduct.price);
+        closeProductModal();
+    }
+}
 // 4. Fetch Products from Supabase
 async function fetchProducts() {
     const { data, error } = await supabaseClient
