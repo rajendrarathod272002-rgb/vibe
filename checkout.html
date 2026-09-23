@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | VYBE</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo"><img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img"></a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="track.html">Track</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+        <div class="header-actions">
+            <div class="cart-icon">🛒 Cart (<span id="cart-count">0</span>)</div>
+        </div>
+    </header>
+
+    <div class="checkout-page">
+        <h1>Checkout</h1>
+        <div class="checkout-grid">
+            <form class="checkout-form" id="checkout-form" onsubmit="placeOrder(event)">
+                <h3>Shipping Details</h3>
+                <input type="text" id="co-name" placeholder="Full Name" required>
+                <input type="tel" id="co-phone" placeholder="Mobile Number" pattern="[0-9]{10}" required>
+                <input type="email" id="co-email" placeholder="Email Address" required>
+                <textarea id="co-address" placeholder="Full Address (House/Flat, Street, Area)" required></textarea>
+                <div class="form-row">
+                    <input type="text" id="co-city" placeholder="City" required>
+                    <input type="text" id="co-pincode" placeholder="Pincode" pattern="[0-9]{6}" required>
+                </div>
+                <h3 style="margin-top:15px;">Payment Method</h3>
+                <select id="co-payment">
+                    <option value="COD">Cash on Delivery (COD)</option>
+                    <option value="Online">Online Payment (Coming Soon)</option>
+                </select>
+                <button type="submit" class="place-order-btn">Place Order</button>
+            </form>
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div id="summary-items"></div>
+                <div class="summary-row total" id="summary-total">₹0</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+    function renderSummary() {
+        const container = document.getElementById('summary-items');
+        let total = 0;
+        if (cart.length === 0) { container.innerHTML = '<p style="color:var(--muted);">Cart empty</p>'; return; }
+        container.innerHTML = cart.map(i => {
+            total += i.price * i.quantity;
+            return `<div class="summary-row"><span>${i.name} (${i.size}) x${i.quantity}</span><span>₹${i.price * i.quantity}</span></div>`;
+        }).join('');
+        document.getElementById('summary-total').innerText = '₹' + total;
+    }
+    
+    // Auto-fill if logged in
+    async function prefillUser() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+            const { data } = await supabaseClient.from('profiles').select('*').eq('id', session.user.id).single();
+            if (data) {
+                document.getElementById('co-name').value = data.full_name || '';
+                document.getElementById('co-phone').value = data.phone || '';
+                document.getElementById('co-email').value = data.email || '';
+            }
+        }
+    }
+    
+    async function placeOrder(e) {
+        e.preventDefault();
+        if (cart.length === 0) return showToast('Cart is empty');
+        
+        const name = document.getElementById('co-name').value.trim();
+        const phone = document.getElementById('co-phone').value.trim();
+        const email = document.getElementById('co-email').value.trim();
+        const address = document.getElementById('co-address').value.trim();
+        const city = document.getElementById('co-city').value.trim();
+        const pincode = document.getElementById('co-pincode').value.trim();
+        const paymentMethod = document.getElementById('co-payment').value;
+        
+        const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+        const trackingId = 'VYBE' + Date.now().toString().slice(-8);
+        
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        
+        const { data: orderData, error: orderError } = await supabaseClient.from('orders').insert([{
+            user_id: session?.user?.id || null,
+            customer_name: name, customer_email: email, customer_phone: phone,
+            customer_address: address, customer_city: city, customer_pincode: pincode,
+            total_amount: total, tracking_id: trackingId, payment_method: paymentMethod,
+            status: 'Processing'
+        }]).select();
+        
+        if (orderError) return showToast('Error: ' + orderError.message);
+        
+        const orderId = orderData[0].id;
+        const orderItems = cart.map(i => ({ order_id: orderId, product_id: i.id, quantity: i.quantity, price: i.price, size: i.size }));
+        await supabaseClient.from('order_items').insert(orderItems);
+        
+        // Save address for user
+        if (session?.user?.id) {
+            await supabaseClient.from('addresses').insert([{
+                user_id: session.user.id, full_name: name, phone, address_line: address,
+                city, state: '', pincode, is_default: true
+            }]).then(() => {});
+        }
+        
+        cart = []; saveCart(); updateCartCount();
+        alert(`Order Placed!\nTracking ID: ${trackingId}\n\nSave this to track your order.`);
+        window.location.href = 'account.html';
+    }
+    
+    renderSummary(); prefillUser();
+    </script>
+</body>
+</html>
