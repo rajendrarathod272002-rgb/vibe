@@ -5,116 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VYBE | Premium Men's Apparel</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-
-    <!-- Header -->
     <header>
-        <!-- Purana Code: <div class="logo" onclick="switchCategory('all')">VYBE</div> -->
-<!-- Naya Code: -->
-<a href="#" class="logo" onclick="switchCategory('all')">
-    <img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE Logo" class="main-logo-img">
-</a>
+        <a href="index.html" class="logo"><img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img"></a>
         <nav>
-    <a href="index.html">Home</a>
-    <a href="shop.html">Shop</a>
-    <a href="track.html">Track Order</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
-</nav>
-        <!-- Premium Theme Toggle Switch -->
-<label class="theme-switch" for="theme-checkbox">
-    <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()" />
-    <div class="slider round">
-        <span class="icon sun-icon">☀</span>
-        <span class="icon moon-icon">☾</span>
-    </div>
-</label>
-        <div class="cart-icon" onclick="toggleCart()">Cart (<span id="cart-count">0</span>)</div>
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="track.html">Track</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+        <div class="header-actions">
+            <label class="theme-switch" for="theme-checkbox">
+                <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()" />
+                <div class="slider round"><span class="icon sun-icon">☀</span><span class="icon moon-icon">☾</span></div>
+            </label>
+            <div class="account-icon" id="auth-btn" onclick="openAuthModal()">👤 Login</div>
+            <div class="cart-icon" onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</div>
+        </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- BANNER CAROUSEL -->
+    <div class="banner-carousel" id="banner-carousel"></div>
+
+    <!-- HERO -->
     <section id="home" class="hero">
         <h1>CRAFTED BEYOND ORDINARY.</h1>
         <p>Premium Men's Apparel designed for every vibe.</p>
-        <button onclick="scrollToShop()">Explore Collection</button>
+        <button class="btn-primary-lg" onclick="scrollToShop()">Explore Collection</button>
     </section>
 
-    <!-- Category Switcher -->
     <section id="shop" class="categories">
         <h2>Select Your Vibe</h2>
-        <div class="category-buttons" id="category-buttons">
-    <!-- Categories yahan automatically load hongi -->
-</div>
+        <div class="category-buttons" id="category-buttons"></div>
     </section>
 
-    <!-- Product Grid -->
     <section class="products-container">
         <h2 id="category-title">All Products</h2>
-        <div id="product-grid" class="product-grid">
-            <!-- Products will be injected here via JS -->
-        </div>
+        <div id="product-grid" class="product-grid"></div>
     </section>
 
-    <!-- Cart Modal -->
+    <!-- CART MODAL -->
     <div id="cart-modal" class="modal hidden">
         <div class="modal-content">
-            <span class="close" onclick="toggleCart()">&times;</span>
-            <h2>Your Cart</h2>
+            <button class="close" onclick="toggleCart()">&times;</button>
+            <h2 style="margin-bottom:20px;">Your Cart</h2>
             <div id="cart-items"></div>
-            <div id="cart-total">Total: ₹0</div>
-            <button onclick="checkout()">Proceed to Checkout</button>
+            <div class="cart-total" id="cart-total">Total: ₹0</div>
+            <button class="place-order-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
         </div>
     </div>
 
-    <!-- Order Tracking Section -->
-    <section id="track" class="tracking">
-        <h2>Track Your Order</h2>
-        <input type="text" id="tracking-id" placeholder="Enter Tracking ID">
-        <button onclick="trackOrder()">Track</button>
-        <div id="tracking-result"></div>
-    </section>
-<!-- Product Details Modal -->
-<div id="product-detail-modal" class="modal hidden">
-    <div class="modal-content product-detail-content">
-        <span class="close" onclick="closeProductModal()">&times;</span>
-        <div class="product-detail-grid">
-            <div class="product-detail-images">
-                <img id="detail-main-img" src="" alt="Product">
+    <!-- AUTH MODAL -->
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close" onclick="closeAuthModal()">&times;</button>
+            <div class="auth-tabs">
+                <button class="active" data-tab="login" onclick="switchAuthTab('login')">Login</button>
+                <button data-tab="signup" onclick="switchAuthTab('signup')">Sign Up</button>
             </div>
-            <div class="product-detail-info">
-                <h2 id="detail-name"></h2>
-                <p class="detail-price" id="detail-price"></p>
-                <p class="detail-desc" id="detail-desc"></p>
-                <div class="detail-actions">
-                    <button onclick="addToCartFromDetail()" class="btn-primary">Add to Cart</button>
-                    <button onclick="closeProductModal()" class="btn-secondary">Continue Shopping</button>
-                </div>
-            </div>
+            <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+                <input type="text" id="login-email" placeholder="Mobile Number or Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <form id="signup-form" class="auth-form hidden" onsubmit="handleSignup(event)">
+                <input type="text" id="signup-name" placeholder="Full Name" required>
+                <input type="tel" id="signup-phone" placeholder="10-digit Mobile Number" pattern="[0-9]{10}" required>
+                <input type="email" id="signup-email" placeholder="Email" required>
+                <input type="password" id="signup-password" placeholder="Password (min 6 chars)" minlength="6" required>
+                <button type="submit">Create Account</button>
+            </form>
         </div>
     </div>
-</div>
-    <!-- Footer / Contact / About -->
-    <footer id="about">
+
+    <footer>
         <div class="footer-content">
-            <div>
-                <h3>About VYBE</h3>
-                <p>We design, stitch, and deliver premium apparel. From everyday wear to signature luxury.</p>
-            </div>
-            <div id="contact">
-                <h3>Contact Us</h3>
-                <p>Email: support@vybe.com</p>
-                <p>Phone: +91 98765 43210</p>
-                <p>Location: Mumbai, India</p>
-            </div>
+            <div><h3>ABOUT VYBE</h3><p>We design, stitch, and deliver premium apparel. From everyday wear to signature luxury.</p></div>
+            <div><h3>QUICK LINKS</h3><p><a href="shop.html">Shop</a></p><p><a href="track.html">Track Order</a></p><p><a href="account.html">My Account</a></p></div>
+            <div><h3>CONTACT</h3><p>Email: support@vybe.com</p><p>Phone: +91 9004844605</p><p>Karale House, Kongaon, Thane, Mumbai, 421311</p></div>
         </div>
-        <!-- Footer ke copyright wali line ke upar daalein -->
-<a href="admin.html" style="color: #333; font-size: 12px; text-decoration: none;">Admin Login</a>
+        <a href="admin.html" style="color:#333;font-size:11px;text-decoration:none;display:block;text-align:center;">Admin</a>
         <p class="copyright">&copy; 2026 VYBE Men's Apparel. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
+    <script src="auth.js"></script>
 </body>
 </html>
