@@ -76,7 +76,26 @@
         <button onclick="trackOrder()">Track</button>
         <div id="tracking-result"></div>
     </section>
-
+<!-- Product Details Modal -->
+<div id="product-detail-modal" class="modal hidden">
+    <div class="modal-content product-detail-content">
+        <span class="close" onclick="closeProductModal()">&times;</span>
+        <div class="product-detail-grid">
+            <div class="product-detail-images">
+                <img id="detail-main-img" src="" alt="Product">
+            </div>
+            <div class="product-detail-info">
+                <h2 id="detail-name"></h2>
+                <p class="detail-price" id="detail-price"></p>
+                <p class="detail-desc" id="detail-desc"></p>
+                <div class="detail-actions">
+                    <button onclick="addToCartFromDetail()" class="btn-primary">Add to Cart</button>
+                    <button onclick="closeProductModal()" class="btn-secondary">Continue Shopping</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- Footer / Contact / About -->
     <footer id="about">
         <div class="footer-content">
