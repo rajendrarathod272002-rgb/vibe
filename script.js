@@ -281,7 +281,27 @@ function loadTheme() {
         if (checkbox) checkbox.checked = false;
     }
 }
-
+// Mobile touch effect
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('touchstart', function() {
+            const hoverImg = this.querySelector('.hover-img');
+            const mainImg = this.querySelector('.main-img');
+            if (hoverImg && mainImg) {
+                mainImg.style.opacity = '0';
+                hoverImg.style.opacity = '1';
+            }
+        });
+        card.addEventListener('touchend', function() {
+            const hoverImg = this.querySelector('.hover-img');
+            const mainImg = this.querySelector('.main-img');
+            if (hoverImg && mainImg) {
+                mainImg.style.opacity = '1';
+                hoverImg.style.opacity = '0';
+            }
+        });
+    });
+});
 // Initialize
 window.onload = () => {
     loadTheme();
