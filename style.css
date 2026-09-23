@@ -32,7 +32,7 @@ header {
     z-index: 100; border-bottom: 1px solid var(--border-color);
     backdrop-filter: blur(12px); gap: 20px; flex-wrap: wrap;
 }
-.logo img { height: 60px; width: auto; }
+.logo img { height: 100px; width: auto; }
 nav { display: flex; gap: 25px; flex: 1; justify-content: center; }
 nav a { font-weight: 500; font-size: 0.95rem; transition: 0.3s; position: relative; }
 nav a:hover { color: var(--primary-cyan); }
