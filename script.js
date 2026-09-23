@@ -66,7 +66,6 @@ function applyFilters() {
     const grid = document.getElementById('product-grid');
     if (!grid) return;
     
-    // Read filter inputs
     const sortEl = document.getElementById('sort-select');
     const priceEl = document.getElementById('price-range');
     if (sortEl) currentSort = sortEl.value;
@@ -238,13 +237,10 @@ async function loadBanners() {
     const { data } = await supabaseClient.from('banners').select('*').eq('is_active', true).order('sort_order');
     
     if (!data || data.length === 0) {
-    // Hero section ko dikhne dein
-    return;
-} else {
-    // Hero section hide karein agar banner hai
-    const hero = document.querySelector('.hero');
-    if (hero) hero.style.display = 'none';
-}
+        return;
+    } else {
+        const hero = document.querySelector('.hero');
+        if (hero) hero.style.display = 'none';
     }
     
     container.innerHTML = data.map((b, i) => `
@@ -267,6 +263,15 @@ async function loadBanners() {
         document.querySelectorAll('.banner-slide').forEach((s, idx) => s.classList.toggle('active', idx === i));
         document.querySelectorAll('.banner-dots span').forEach((s, idx) => s.classList.toggle('active', idx === i));
     };
+}
+
+// ---------- TOAST ----------
+function showToast(msg) {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerText = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2500);
 }
 
 // ---------- INIT ----------
