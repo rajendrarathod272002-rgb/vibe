@@ -238,8 +238,13 @@ async function loadBanners() {
     const { data } = await supabaseClient.from('banners').select('*').eq('is_active', true).order('sort_order');
     
     if (!data || data.length === 0) {
-        // Fallback: agar koi banner nahi hai toh hero section dikhao
-        return;
+    // Hero section ko dikhne dein
+    return;
+} else {
+    // Hero section hide karein agar banner hai
+    const hero = document.querySelector('.hero');
+    if (hero) hero.style.display = 'none';
+}
     }
     
     container.innerHTML = data.map((b, i) => `
