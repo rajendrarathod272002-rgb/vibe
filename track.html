@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order | VYBE</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo"><img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img"></a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="track.html">Track</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+        <div class="header-actions">
+            <label class="theme-switch" for="theme-checkbox">
+                <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()" />
+                <div class="slider round"><span class="icon sun-icon">☀</span><span class="icon moon-icon">☾</span></div>
+            </label>
+            <div class="account-icon" id="auth-btn" onclick="openAuthModal()">👤 Login</div>
+            <div class="cart-icon" onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</div>
+        </div>
+    </header>
+
+    <section class="tracking" style="min-height:60vh;">
+        <h2>Track Your Order</h2>
+        <p style="color:var(--muted);margin-bottom:25px;">Enter your Tracking ID to see live status</p>
+        <input type="text" id="tracking-id" placeholder="e.g. VYBE12345678">
+        <button onclick="trackOrder()">Track Order</button>
+        <div id="tracking-result"></div>
+    </section>
+
+    <div id="cart-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close" onclick="toggleCart()">&times;</button>
+            <h2 style="margin-bottom:20px;">Your Cart</h2>
+            <div id="cart-items"></div>
+            <div class="cart-total" id="cart-total">Total: ₹0</div>
+            <button class="place-order-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close" onclick="closeAuthModal()">&times;</button>
+            <div class="auth-tabs">
+                <button class="active" data-tab="login" onclick="switchAuthTab('login')">Login</button>
+                <button data-tab="signup" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+            <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+                <input type="text" id="login-email" placeholder="Mobile Number or Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <form id="signup-form" class="auth-form hidden" onsubmit="handleSignup(event)">
+                <input type="text" id="signup-name" placeholder="Full Name" required>
+                <input type="tel" id="signup-phone" placeholder="10-digit Mobile Number" pattern="[0-9]{10}" required>
+                <input type="email" id="signup-email" placeholder="Email" required>
+                <input type="password" id="signup-password" placeholder="Password (min 6 chars)" minlength="6" required>
+                <button type="submit">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>
