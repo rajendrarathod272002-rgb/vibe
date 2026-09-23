@@ -30,7 +30,23 @@
         <h2>Select Your Vibe</h2>
         <div class="category-buttons" id="category-buttons"></div>
     </section>
-
+<!-- Filter Bar -->
+<div class="filter-bar">
+    <div class="filter-group">
+        <label>Sort By:</label>
+        <select id="sort-select" onchange="applyFilters()">
+            <option value="default">Default</option>
+            <option value="low-high">Price: Low to High</option>
+            <option value="high-low">Price: High to Low</option>
+            <option value="name">Name: A to Z</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <label>Max Price:</label>
+        <input type="range" id="price-range" min="0" max="10000" value="10000" oninput="applyFilters()">
+        <span id="price-display">₹10000</span>
+    </div>
+</div>
     <section class="products-container">
         <h2 id="category-title">All Products</h2>
         <div id="product-grid" class="product-grid"></div>
