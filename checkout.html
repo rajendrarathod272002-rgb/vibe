@@ -105,7 +105,16 @@
         if (orderError) return showToast('Error: ' + orderError.message);
         
         const orderId = orderData[0].id;
-        const orderItems = cart.map(i => ({ order_id: orderId, product_id: i.id, quantity: i.quantity, price: i.price, size: i.size }));
+        const orderItems = cart.map(i => ({ 
+    order_id: orderId, 
+    product_id: i.id, 
+    quantity: i.quantity, 
+    price: i.price, 
+    size: i.size,
+    product_name: i.name,
+    product_image: (allProducts.find(p => p.id === i.id)?.image_url) || null
+}));
+await supabaseClient.from('order_items').insert(orderItems);
         await supabaseClient.from('order_items').insert(orderItems);
         
         // Save address for user
