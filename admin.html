@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VYBE Admin Panel</title>
     <link rel="stylesheet" href="admin-style.css">
 </head>
@@ -14,17 +15,21 @@
         <button onclick="adminLogin()">Login</button>
     </div>
 
-    <!-- Dashboard (Hidden by default) -->
+    <!-- Dashboard -->
     <div id="dashboard" class="hidden">
         <header>
             <h1>VYBE Control Panel</h1>
-            <button onclick="adminLogout()">Logout</button>
+            <div style="display:flex;gap:10px;align-items:center;">
+                <a href="index.html" target="_blank" style="color:#888;font-size:14px;text-decoration:none;">Visit Site ↗</a>
+                <button onclick="adminLogout()">Logout</button>
+            </div>
         </header>
 
         <div class="tabs">
-            <button onclick="showTab('orders')">Orders</button>
-            <button onclick="showTab('products')">Products</button>
-            <button onclick="showTab('categories')">Categories</button>
+            <button onclick="showTab('orders', this)" class="active">Orders</button>
+            <button onclick="showTab('products', this)">Products</button>
+            <button onclick="showTab('categories', this)">Categories</button>
+            <button onclick="showTab('banners', this)">Banners</button>
         </div>
 
         <!-- Orders Section -->
@@ -47,38 +52,102 @@
         <!-- Products Section -->
         <div id="tab-products" class="tab-content hidden">
             <h2>Manage Products</h2>
-            <form id="add-product-form" onsubmit="addProduct(event)">
+            <form id="add-product-form" onsubmit="addProduct(event)" class="admin-form">
+                <h3 style="margin-bottom:15px;color:#8A2BE2;">Add New Product</h3>
                 <input type="text" id="prod-name" placeholder="Product Name" required>
-                <input type="number" id="prod-price" placeholder="Price" required>
+                <input type="number" id="prod-price" placeholder="Selling Price (₹)" required>
+                <input type="number" id="prod-mrp" placeholder="MRP (₹) - Optional">
                 <select id="prod-category" required>
                     <option value="">Select Category</option>
                 </select>
-                <label style="color: #ccc; font-size: 14px;">Upload Image (Direct from Device)</label>
-<input type="file" id="prod-image-file" accept="image/*" style="margin-bottom: 10px;">
-
-<p style="color: #888; font-size: 12px; text-align: center; margin: 5px 0;">— OR —</p>
-                <label style="color: #ccc; font-size: 14px;">Upload Image (Direct from Device)</label>
-<input type="file" id="prod-image-file" accept="image/*" style="margin-bottom: 10px;">
-
-<p style="color: #888; font-size: 12px; text-align: center; margin: 5px 0;">— OR —</p>
-                <input type="text" id="prod-image" placeholder="Image URL" required>
-                <label style="color: #ccc; font-size: 14px;">Hover Image URL (Optional)</label>
-<input type="text" id="prod-hover-image" placeholder="Hover image ka link">
+                <textarea id="prod-description" placeholder="Product Description" rows="3"></textarea>
+                <input type="text" id="prod-sizes" placeholder="Sizes (comma separated): S,M,L,XL" value="S,M,L,XL">
+                <input type="number" id="prod-stock" placeholder="Stock Quantity" value="10">
+                
+                <label>Product Image (Upload)</label>
+                <input type="file" id="prod-image-file" accept="image/*">
+                
+                <label>Hover Image (Optional - 2nd Photo)</label>
+                <input type="file" id="prod-hover-file" accept="image/*">
+                
+                <p class="or-divider">— OR paste URLs below —</p>
+                <input type="text" id="prod-image" placeholder="Main Image URL">
+                <input type="text" id="prod-hover-image" placeholder="Hover Image URL">
+                
                 <button type="submit">Add Product</button>
             </form>
-            <div id="products-list"></div>
+            <div id="products-list" class="items-list"></div>
         </div>
 
         <!-- Categories Section -->
         <div id="tab-categories" class="tab-content hidden">
             <h2>Manage Categories</h2>
-            <form id="add-category-form" onsubmit="addCategory(event)">
-                <input type="text" id="cat-name" placeholder="Category Name (e.g. Summer Wear)" required>
+            <form id="add-category-form" onsubmit="addCategory(event)" class="admin-form">
+                <input type="text" id="cat-name" placeholder="Category Name" required>
                 <input type="text" id="cat-color" placeholder="Theme Color (e.g. #FF0000)" required>
                 <input type="text" id="cat-image" placeholder="Category Image URL (Optional)">
                 <button type="submit">Add Category</button>
             </form>
-            <div id="categories-list"></div>
+            <div id="categories-list" class="items-list"></div>
+        </div>
+
+        <!-- Banners Section -->
+        <div id="tab-banners" class="tab-content hidden">
+            <h2>Manage Homepage Banners</h2>
+            <form id="add-banner-form" onsubmit="addBanner(event)" class="admin-form">
+                <input type="text" id="banner-title" placeholder="Banner Title (e.g. Winter Sale 50% OFF)">
+                <input type="text" id="banner-subtitle" placeholder="Subtitle (Optional)">
+                <input type="text" id="banner-link" placeholder="Link (e.g. shop.html) - Optional">
+                <input type="number" id="banner-order" placeholder="Sort Order (1, 2, 3...)" value="1">
+                <label>Banner Image (Upload)</label>
+                <input type="file" id="banner-file" accept="image/*">
+                <p class="or-divider">— OR paste URL —</p>
+                <input type="text" id="banner-url" placeholder="Banner Image URL">
+                <button type="submit">Add Banner</button>
+            </form>
+            <div id="banners-list" class="items-list"></div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div id="edit-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            <h2>Edit Product</h2>
+            <form id="edit-product-form" onsubmit="saveProductEdit(event)">
+                <input type="hidden" id="edit-id">
+                <label>Product Name</label>
+                <input type="text" id="edit-name" required>
+                <div class="two-col">
+                    <div><label>Price (₹)</label><input type="number" id="edit-price" required></div>
+                    <div><label>MRP (₹)</label><input type="number" id="edit-mrp"></div>
+                </div>
+                <label>Category</label>
+                <select id="edit-category" required></select>
+                <label>Description</label>
+                <textarea id="edit-description" rows="3"></textarea>
+                <label>Sizes (comma separated)</label>
+                <input type="text" id="edit-sizes" placeholder="S,M,L,XL">
+                <label>Stock</label>
+                <input type="number" id="edit-stock">
+                <label>Main Image URL</label>
+                <input type="text" id="edit-image">
+                <label>Hover Image URL</label>
+                <input type="text" id="edit-hover-image">
+                <div class="two-col" style="margin-top:15px;">
+                    <button type="button" onclick="closeEditModal()" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="order-modal" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width:700px;">
+            <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+            <h2>Order Details</h2>
+            <div id="order-details-content"></div>
         </div>
     </div>
 
