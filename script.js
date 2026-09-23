@@ -116,13 +116,18 @@ function renderProducts(categorySlug) {
     }
 
     grid.innerHTML = filteredProducts.map(product => `
-        <div class="product-card">
-            <img src="${product.image_url}" alt="${product.name}">
-            <h3>${product.name}</h3>
-            <p class="price">₹${product.price}</p>
-            <button onclick="addToCart(${product.id}, '${product.name}', ${product.price})">Add to Cart</button>
+    <div class="product-card" onclick="showProductDetails(${product.id})">
+        <div class="product-image-wrapper">
+            <img src="${product.image_url}" alt="${product.name}" class="main-img">
+            ${product.hover_image_url ? 
+                `<img src="${product.hover_image_url}" alt="${product.name}" class="hover-img">` 
+                : ''}
         </div>
-    `).join('');
+        <h3>${product.name}</h3>
+        <p class="price">₹${product.price}</p>
+        <button onclick="event.stopPropagation(); addToCart(${product.id}, '${product.name}', ${product.price})">Add to Cart</button>
+    </div>
+`).join('');
 }
 
 // 6. Category Switcher
