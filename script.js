@@ -47,7 +47,41 @@ async function loadCategories() {
     
     container.innerHTML = buttonsHTML;
 }
-
+// Apply Filters Function
+function applyFilters() {
+    const sortValue = document.getElementById('sort-select').value;
+    const maxPrice = parseInt(document.getElementById('price-range').value);
+    document.getElementById('price-display').innerText = '₹' + maxPrice;
+    
+    // Current category ko get karein
+    const activeBtn = document.querySelector('.cat-img-btn.active, .cat-btn.active');
+    let currentCategory = 'all';
+    if (activeBtn) {
+        currentCategory = activeBtn.dataset.cat || 'all';
+    }
+    
+    // Products ko filter karein
+    let filtered = allProducts;
+    
+    if (currentCategory !== 'all') {
+        filtered = filtered.filter(p => p.categories.slug === currentCategory);
+    }
+    
+    // Price filter
+    filtered = filtered.filter(p => p.price <= maxPrice);
+    
+    // Sorting
+    if (sortValue === 'low-high') {
+        filtered.sort((a, b) => a.price - b.price);
+    } else if (sortValue === 'high-low') {
+        filtered.sort((a, b) => b.price - a.price);
+    } else if (sortValue === 'name') {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    
+    // Render filtered products
+    renderFilteredProducts(filtered);
+}
 // 4. Fetch Products from Supabase
 async function fetchProducts() {
     const { data, error } = await supabaseClient
