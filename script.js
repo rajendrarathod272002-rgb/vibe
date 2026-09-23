@@ -276,5 +276,4 @@ window.onload = () => {
     if (typeof checkAuthSession === 'function') checkAuthSession();
     if (document.getElementById('category-buttons')) { loadCategories(); fetchProducts(); }
     if (document.getElementById('banner-carousel')) loadBanners();
-    if (document.getElementById('tracking-id')) { /* tracking page ready */ }
 };
