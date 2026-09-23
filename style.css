@@ -498,3 +498,44 @@ input:checked + .slider .moon-icon {
     .product-card img { height: 300px; }
     .footer-content { flex-direction: column; text-align: center; }
 }
+.product-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.product-image-wrapper .main-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: opacity 0.4s ease;
+}
+
+.product-image-wrapper .hover-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.product-card:hover .hover-img {
+    opacity: 1;
+}
+
+.product-card:hover .main-img {
+    opacity: 0;
+}
+
+/* Mobile ke liye touch effect */
+@media (max-width: 768px) {
+    .product-card:active .hover-img {
+        opacity: 1;
+    }
+    .product-card:active .main-img {
+        opacity: 0;
+    }
+}
