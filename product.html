@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product | VYBE</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo"><img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img"></a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="track.html">Track</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+        <div class="header-actions">
+            <label class="theme-switch" for="theme-checkbox">
+                <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()" />
+                <div class="slider round"><span class="icon sun-icon">☀</span><span class="icon moon-icon">☾</span></div>
+            </label>
+            <div class="account-icon" id="auth-btn" onclick="openAuthModal()">👤 Login</div>
+            <div class="cart-icon" onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</div>
+        </div>
+    </header>
+
+    <div class="product-detail-page" id="product-detail-page">
+        <div style="text-align:center;padding:60px;grid-column:1/-1;color:var(--muted);">Loading...</div>
+    </div>
+
+    <div id="cart-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close" onclick="toggleCart()">&times;</button>
+            <h2 style="margin-bottom:20px;">Your Cart</h2>
+            <div id="cart-items"></div>
+            <div class="cart-total" id="cart-total">Total: ₹0</div>
+            <button class="place-order-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close" onclick="closeAuthModal()">&times;</button>
+            <div class="auth-tabs">
+                <button class="active" data-tab="login" onclick="switchAuthTab('login')">Login</button>
+                <button data-tab="signup" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+            <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+                <input type="text" id="login-email" placeholder="Mobile Number or Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <form id="signup-form" class="auth-form hidden" onsubmit="handleSignup(event)">
+                <input type="text" id="signup-name" placeholder="Full Name" required>
+                <input type="tel" id="signup-phone" placeholder="10-digit Mobile Number" pattern="[0-9]{10}" required>
+                <input type="email" id="signup-email" placeholder="Email" required>
+                <input type="password" id="signup-password" placeholder="Password (min 6 chars)" minlength="6" required>
+                <button type="submit">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+    let selectedSize = null;
+    async function loadProduct() {
+        const id = new URLSearchParams(window.location.search).get('id');
+        if (!id) return;
+        const { data, error } = await supabaseClient.from('products').select('*, categories(name, slug)').eq('id', id).single();
+        if (error || !data) { document.getElementById('product-detail-page').innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:60px;">Product not found</p>'; return; }
+        
+        const p = data;
+        const discount = p.mrp && p.mrp > p.price ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0;
+        const sizes = p.sizes && p.sizes.length ? p.sizes : ['S','M','L','XL'];
+        selectedSize = sizes[0];
+        
+        document.getElementById('product-detail-page').innerHTML = `
+            <div class="product-gallery">
+                <img src="${p.image_url}" class="main-image" id="main-image">
+                <div class="product-thumbs">
+                    <img src="${p.image_url}" class="active" onclick="document.getElementById('main-image').src='${p.image_url}'; setActiveThumb(this);">
+                    ${p.hover_image_url ? `<img src="${p.hover_image_url}" onclick="document.getElementById('main-image').src='${p.hover_image_url}'; setActiveThumb(this);">` : ''}
+                </div>
+            </div>
+            <div class="product-info-detail">
+                <p style="color:var(--muted);margin-bottom:10px;">${p.categories?.name || ''}</p>
+                <h1>${p.name}</h1>
+                <div class="price-row">
+                    <span class="price">₹${p.price}</span>
+                    ${discount > 0 ? `<span class="mrp">₹${p.mrp}</span><span class="discount">${discount}% OFF</span>` : ''}
+                </div>
+                <p class="desc">${p.description || 'Premium quality men\'s apparel from VYBE. Crafted with care for the modern man.'}</p>
+                <div class="size-selector">
+                    <h4>Select Size</h4>
+                    <div class="size-options">
+                        ${sizes.map((s, i) => `<button class="size-option ${i === 0 ? 'selected' : ''}" onclick="selectSize(this, '${s}')">${s}</button>`).join('')}
+                    </div>
+                </div>
+                <div class="detail-actions">
+                    <button class="btn-add-cart" onclick="addToCart(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price}, selectedSize)">Add to Cart</button>
+                    <button class="btn-buy-now" onclick="buyNow(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price}, selectedSize)">Buy Now</button>
+                </div>
+            </div>`;
+    }
+    function selectSize(el, size) { document.querySelectorAll('.size-option').forEach(o => o.classList.remove('selected')); el.classList.add('selected'); selectedSize = size; }
+    function setActiveThumb(el) { document.querySelectorAll('.product-thumbs img').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
+    function buyNow(id, name, price, size) { addToCart(id, name, price, size); setTimeout(() => window.location.href = 'checkout.html', 600); }
+    loadProduct();
+    </script>
+</body>
+</html>
