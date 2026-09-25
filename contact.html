@@ -1,8 +1,169 @@
-<!-- Header same rahega -->
-<section class="tracking">
-    <h2>Contact Us</h2>
-    <p>Email: support@vybe.com</p>
-    <p>Phone: +91 9004844605</p>
-    <p>Location: Karale House, Kongaon, Thane, Mumbai, Maharashtra, 421311 India</p>
-    <!-- Yahan aap Google Maps ka iframe bhi add kar sakte hain -->
-</section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us & Studio Location | VYBE Men's Apparel</title>
+    <meta name="description" content="Reach the VYBE customer support and design studio. Phone, email, address, and interactive Google Map location.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <a href="index.html" class="logo">
+            <img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img">
+        </a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="auction.html" class="nav-auction">⚡ Auctions</a>
+            <a href="track.html">Track</a>
+            <a href="about.html">About</a>
+            <a href="contact.html" class="active">Contact</a>
+        </nav>
+        <div class="header-actions">
+            <label class="theme-switch" for="theme-checkbox">
+                <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()" />
+                <div class="slider round">
+                    <span class="icon sun-icon">☀</span>
+                    <span class="icon moon-icon">☾</span>
+                </div>
+            </label>
+            <div class="account-icon" id="auth-btn">👤 Login</div>
+            <div class="cart-icon" onclick="toggleCart()">🛒 Bag (<span id="cart-count">0</span>)</div>
+        </div>
+    </header>
+
+    <section class="hero" style="min-height: 40vh;">
+        <span class="badge-tag badge-auction" style="position:static;display:inline-block;margin-bottom:12px;">CLIENT CONCIERGE</span>
+        <h1>WE'RE HERE FOR YOU</h1>
+        <p>Inquiries about bespoke sizing, order logistics, or private auction bidding? Connect directly with our team.</p>
+    </section>
+
+    <div style="max-width: 1050px; margin: 40px auto; padding: 0 5%;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-bottom: 40px;">
+            <!-- DIRECT CONTACT DETAILS -->
+            <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 35px;">
+                <h2 style="font-size: 1.4rem; margin-bottom: 24px; color: var(--primary-cyan);">Direct Concierge</h2>
+
+                <div style="margin-bottom: 24px;">
+                    <strong style="display: block; font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;">Customer Inquiries</strong>
+                    <a href="mailto:support@vybe.com" style="color: var(--primary-orange); font-size: 1.15rem; font-weight: 700;">support@vybe.com</a>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <strong style="display: block; font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;">Phone & WhatsApp Support</strong>
+                    <a href="tel:+919004844605" style="color: var(--text-color); font-size: 1.15rem; font-weight: 700;">+91 9004844605</a>
+                    <p style="color: var(--muted); font-size: 0.85rem; margin-top: 4px;">Monday – Saturday, 10:00 AM – 7:00 PM IST</p>
+                </div>
+
+                <div>
+                    <strong style="display: block; font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;">Registered Studio & Atelier</strong>
+                    <p style="color: var(--text-color); margin-top: 6px; line-height: 1.7;">
+                        Karale House, Kongaon, Thane,<br>
+                        Mumbai, Maharashtra - 421311, India
+                    </p>
+                </div>
+            </div>
+
+            <!-- SEND MESSAGE FORM -->
+            <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 35px;">
+                <h2 style="font-size: 1.4rem; margin-bottom: 24px; color: var(--primary-purple);">Send A Message</h2>
+                <form onsubmit="handleContactSubmit(event)" style="display: flex; flex-direction: column; gap: 16px;">
+                    <input type="text" id="contact-name" placeholder="Your Name" required style="padding: 13px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-color); font-family: inherit;">
+                    <input type="email" id="contact-email" placeholder="Your Email Address" required style="padding: 13px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-color); font-family: inherit;">
+                    <input type="tel" id="contact-phone" placeholder="Mobile Number (Optional)" style="padding: 13px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-color); font-family: inherit;">
+                    <textarea id="contact-message" placeholder="How can our concierge assist you?" rows="4" required style="padding: 13px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-color); font-family: inherit; resize: vertical;"></textarea>
+                    <button type="submit" class="btn-primary-lg" style="width: 100%; border-radius: 10px; padding: 14px;">Send Message</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- GOOGLE MAPS EMBED -->
+        <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; overflow: hidden; margin-bottom: 50px;">
+            <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 1.1rem; font-weight: 700;">Studio Location Map</h3>
+                <span style="font-size: 0.85rem; color: var(--muted);">Thane, Mumbai</span>
+            </div>
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15068.789123012!2d73.085!3d19.235!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7bd7b3f9b2d8d%3A0xb21469e32a6774e1!2sKongaon%2C%20Thane%2C%20Maharashtra%20421311!5e0!3m2!1sen!2sin!4v1710000000000"
+                width="100%" 
+                height="380" 
+                style="border:0; display:block;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </div>
+
+    <!-- CART MODAL -->
+    <div id="cart-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close" onclick="toggleCart()">&times;</button>
+            <h2 style="margin-bottom:20px;font-size:1.5rem;">Your Shopping Bag</h2>
+            <div id="cart-items"></div>
+            <div class="cart-total" id="cart-total">Total: ₹0</div>
+            <button class="place-order-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL -->
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close" onclick="closeAuthModal()">&times;</button>
+            <div class="auth-tabs">
+                <button class="active" data-tab="login" onclick="switchAuthTab('login')">Login</button>
+                <button data-tab="signup" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+            <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+                <input type="text" id="login-email" placeholder="10-digit Mobile Number or Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <form id="signup-form" class="auth-form hidden" onsubmit="handleSignup(event)">
+                <input type="text" id="signup-name" placeholder="Full Name" required>
+                <input type="tel" id="signup-phone" placeholder="10-digit Mobile Number" pattern="[0-9]{10}" required>
+                <input type="email" id="signup-email" placeholder="Email Address" required>
+                <input type="password" id="signup-password" placeholder="Password (min 6 characters)" minlength="6" required>
+                <button type="submit">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h3>ABOUT VYBE</h3>
+                <p>We design, stitch, and deliver premium apparel. From everyday wear to signature luxury.</p>
+            </div>
+            <div>
+                <h3>QUICK LINKS</h3>
+                <p><a href="shop.html">Shop All</a></p>
+                <p><a href="auction.html">Live Auctions</a></p>
+                <p><a href="track.html">Track Order</a></p>
+                <p><a href="account.html">My Account</a></p>
+            </div>
+            <div>
+                <h3>CONTACT</h3>
+                <p>Email: <a href="mailto:support@vybe.com" style="color:var(--primary-orange);">support@vybe.com</a></p>
+                <p>Phone: +91 9004844605</p>
+                <p>Karale House, Kongaon, Thane, Mumbai, 421311</p>
+            </div>
+        </div>
+        <p class="copyright">&copy; 2026 VYBE Men's Apparel. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+    function handleContactSubmit(e) {
+        e.preventDefault();
+        showToast('Thank you! Your message has been received. Our team will contact you shortly.');
+        e.target.reset();
+    }
+    </script>
+</body>
+</html>

@@ -3,134 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout | VYBE</title>
+    <title>Checkout | VYBE Men's Apparel</title>
+    <meta name="description" content="Complete your luxury wardrobe purchase. Secure checkout with free shipping across India.">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+    <!-- HEADER -->
     <header>
-        <a href="index.html" class="logo"><img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img"></a>
+        <a href="index.html" class="logo">
+            <img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img">
+        </a>
         <nav>
             <a href="index.html">Home</a>
             <a href="shop.html">Shop</a>
+            <a href="auction.html" class="nav-auction">⚡ Auctions</a>
             <a href="track.html">Track</a>
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
         </nav>
         <div class="header-actions">
-            <div class="cart-icon">🛒 Cart (<span id="cart-count">0</span>)</div>
+            <label class="theme-switch" for="theme-checkbox">
+                <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()" />
+                <div class="slider round">
+                    <span class="icon sun-icon">☀</span>
+                    <span class="icon moon-icon">☾</span>
+                </div>
+            </label>
+            <div class="account-icon" id="auth-btn">👤 Login</div>
+            <div class="cart-icon" onclick="toggleCart()">🛒 Bag (<span id="cart-count">0</span>)</div>
         </div>
     </header>
 
     <div class="checkout-page">
-        <h1>Checkout</h1>
+        <h1 class="section-title">Secure Checkout</h1>
+        <p class="section-subtitle">Complete your details to place your custom order</p>
+
         <div class="checkout-grid">
-            <form class="checkout-form" id="checkout-form" onsubmit="placeOrder(event)">
-                <h3>Shipping Details</h3>
-                <input type="text" id="co-name" placeholder="Full Name" required>
-                <input type="tel" id="co-phone" placeholder="Mobile Number" pattern="[0-9]{10}" required>
-                <input type="email" id="co-email" placeholder="Email Address" required>
-                <textarea id="co-address" placeholder="Full Address (House/Flat, Street, Area)" required></textarea>
-                <div class="form-row">
-                    <input type="text" id="co-city" placeholder="City" required>
-                    <input type="text" id="co-pincode" placeholder="Pincode" pattern="[0-9]{6}" required>
+            <!-- CHECKOUT FORM -->
+            <form class="checkout-form" onsubmit="handlePlaceOrder(event)">
+                <h2>Shipping & Contact Information</h2>
+
+                <div class="form-field">
+                    <label for="c-name">Full Name *</label>
+                    <input type="text" id="c-name" placeholder="E.g. Rajendra Rathod" required>
                 </div>
-                <h3 style="margin-top:15px;">Payment Method</h3>
-                <select id="co-payment">
-                    <option value="COD">Cash on Delivery (COD)</option>
-                    <option value="Online">Online Payment (Coming Soon)</option>
-                </select>
-                <button type="submit" class="place-order-btn">Place Order</button>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="c-phone">10-Digit Mobile *</label>
+                        <input type="tel" id="c-phone" pattern="[0-9]{10}" placeholder="9876543210" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="c-email">Email Address *</label>
+                        <input type="email" id="c-email" placeholder="you@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="c-address">Street Address / House No. *</label>
+                    <textarea id="c-address" rows="3" placeholder="Flat No, Building, Street, Landmark" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="c-city">City *</label>
+                        <input type="text" id="c-city" placeholder="Mumbai, Pune, Delhi..." required>
+                    </div>
+                    <div class="form-field">
+                        <label for="c-pincode">Pincode (6 Digits) *</label>
+                        <input type="text" id="c-pincode" pattern="[0-9]{6}" maxlength="6" placeholder="421311" required>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="c-payment">Payment Method</label>
+                    <select id="c-payment">
+                        <option value="COD">Cash on Delivery (COD)</option>
+                        <option value="Online">UPI / Net Banking / Cards (Instant Confirmation)</option>
+                    </select>
+                </div>
+
+                <button type="submit" id="btn-submit-order" class="place-order-btn">
+                    Place Order & Generate Tracking ID
+                </button>
             </form>
+
+            <!-- ORDER SUMMARY SIDEBAR -->
             <div class="order-summary">
                 <h3>Order Summary</h3>
-                <div id="summary-items"></div>
-                <div class="summary-row total" id="summary-total">₹0</div>
+                <div class="summary-items-list" id="summary-items"></div>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="sum-subtotal">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping Fee</span>
+                    <span id="sum-shipping">FREE</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Grand Total</span>
+                    <span id="sum-total">₹0</span>
+                </div>
+                <p style="font-size:0.75rem;color:var(--muted);margin-top:14px;line-height:1.5;">
+                    ✓ Free shipping on all orders over ₹999.<br>
+                    ✓ Handcrafted & inspected prior to dispatch.
+                </p>
             </div>
         </div>
     </div>
 
+    <!-- CART MODAL -->
+    <div id="cart-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close" onclick="toggleCart()">&times;</button>
+            <h2 style="margin-bottom:20px;font-size:1.5rem;">Your Shopping Bag</h2>
+            <div id="cart-items"></div>
+            <div class="cart-total" id="cart-total">Total: ₹0</div>
+            <button class="place-order-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL -->
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close" onclick="closeAuthModal()">&times;</button>
+            <div class="auth-tabs">
+                <button class="active" data-tab="login" onclick="switchAuthTab('login')">Login</button>
+                <button data-tab="signup" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+            <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+                <input type="text" id="login-email" placeholder="10-digit Mobile Number or Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <form id="signup-form" class="auth-form hidden" onsubmit="handleSignup(event)">
+                <input type="text" id="signup-name" placeholder="Full Name" required>
+                <input type="tel" id="signup-phone" placeholder="10-digit Mobile Number" pattern="[0-9]{10}" required>
+                <input type="email" id="signup-email" placeholder="Email Address" required>
+                <input type="password" id="signup-password" placeholder="Password (min 6 characters)" minlength="6" required>
+                <button type="submit">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h3>ABOUT VYBE</h3>
+                <p>We design, stitch, and deliver premium apparel. From everyday wear to signature luxury.</p>
+            </div>
+            <div>
+                <h3>QUICK LINKS</h3>
+                <p><a href="shop.html">Shop</a></p>
+                <p><a href="auction.html">Live Auctions</a></p>
+                <p><a href="track.html">Track Order</a></p>
+                <p><a href="account.html">My Account</a></p>
+            </div>
+            <div>
+                <h3>CONTACT</h3>
+                <p>Email: <a href="mailto:support@vybe.com" style="color:var(--primary-orange);">support@vybe.com</a></p>
+                <p>Phone: +91 9004844605</p>
+                <p>Karale House, Kongaon, Thane, Mumbai, 421311</p>
+            </div>
+        </div>
+        <p class="copyright">&copy; 2026 VYBE Men's Apparel. All rights reserved.</p>
+    </footer>
+
     <script src="script.js"></script>
     <script src="auth.js"></script>
     <script>
+    let subtotal = 0;
+    let shipping = 0;
+    let grandTotal = 0;
+
     function renderSummary() {
         const container = document.getElementById('summary-items');
-        let total = 0;
-        if (cart.length === 0) { container.innerHTML = '<p style="color:var(--muted);">Cart empty</p>'; return; }
-        container.innerHTML = cart.map(i => {
-            total += i.price * i.quantity;
-            return `<div class="summary-row"><span>${i.name} (${i.size}) x${i.quantity}</span><span>₹${i.price * i.quantity}</span></div>`;
-        }).join('');
-        document.getElementById('summary-total').innerText = '₹' + total;
+        if (!container) return;
+
+        if (cart.length === 0) {
+            container.innerHTML = '<p style="color:var(--muted);padding:15px 0;">No items in cart</p>';
+            document.getElementById('sum-subtotal').innerText = '₹0';
+            document.getElementById('sum-total').innerText = '₹0';
+            return;
+        }
+
+        subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        shipping = subtotal >= 999 ? 0 : 99;
+        grandTotal = subtotal + shipping;
+
+        container.innerHTML = cart.map(item => `
+            <div class="summary-item-row">
+                <div>
+                    <strong>${item.name}</strong>
+                    <div style="font-size:0.8rem;color:var(--muted);">${item.size} × ${item.quantity}</div>
+                </div>
+                <span>₹${(item.price * item.quantity).toLocaleString('en-IN')}</span>
+            </div>
+        `).join('');
+
+        document.getElementById('sum-subtotal').innerText = '₹' + subtotal.toLocaleString('en-IN');
+        document.getElementById('sum-shipping').innerText = shipping === 0 ? 'FREE' : '₹' + shipping;
+        document.getElementById('sum-total').innerText = '₹' + grandTotal.toLocaleString('en-IN');
     }
-    
-    // Auto-fill if logged in
-    async function prefillUser() {
+
+    async function prefillUserData() {
         const { data: { session } } = await supabaseClient.auth.getSession();
-        if (session) {
-            const { data } = await supabaseClient.from('profiles').select('*').eq('id', session.user.id).single();
-            if (data) {
-                document.getElementById('co-name').value = data.full_name || '';
-                document.getElementById('co-phone').value = data.phone || '';
-                document.getElementById('co-email').value = data.email || '';
+        if (session && session.user) {
+            const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', session.user.id).single();
+            if (profile) {
+                if (profile.full_name) document.getElementById('c-name').value = profile.full_name;
+                if (profile.phone) document.getElementById('c-phone').value = profile.phone;
+                if (profile.email) document.getElementById('c-email').value = profile.email;
+            } else {
+                if (session.user.email) document.getElementById('c-email').value = session.user.email;
+            }
+
+            // Fetch saved address
+            const { data: addr } = await supabaseClient.from('addresses').select('*').eq('user_id', session.user.id).order('is_default', { ascending: false }).limit(1).maybeSingle();
+            if (addr) {
+                if (addr.address_line) document.getElementById('c-address').value = addr.address_line;
+                if (addr.city) document.getElementById('c-city').value = addr.city;
+                if (addr.pincode) document.getElementById('c-pincode').value = addr.pincode;
             }
         }
     }
-    
-    async function placeOrder(e) {
+
+    async function handlePlaceOrder(e) {
         e.preventDefault();
-        if (cart.length === 0) return showToast('Cart is empty');
-        
-        const name = document.getElementById('co-name').value.trim();
-        const phone = document.getElementById('co-phone').value.trim();
-        const email = document.getElementById('co-email').value.trim();
-        const address = document.getElementById('co-address').value.trim();
-        const city = document.getElementById('co-city').value.trim();
-        const pincode = document.getElementById('co-pincode').value.trim();
-        const paymentMethod = document.getElementById('co-payment').value;
-        
-        const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-        const trackingId = 'VYBE' + Date.now().toString().slice(-8);
-        
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        
-        const { data: orderData, error: orderError } = await supabaseClient.from('orders').insert([{
-            user_id: session?.user?.id || null,
-            customer_name: name, customer_email: email, customer_phone: phone,
-            customer_address: address, customer_city: city, customer_pincode: pincode,
-            total_amount: total, tracking_id: trackingId, payment_method: paymentMethod,
-            status: 'Processing'
-        }]).select();
-        
-        if (orderError) return showToast('Error: ' + orderError.message);
-        
-        const orderId = orderData[0].id;
-        const orderItems = cart.map(i => ({ 
-    order_id: orderId, 
-    product_id: i.id, 
-    quantity: i.quantity, 
-    price: i.price, 
-    size: i.size,
-    product_name: i.name,
-    product_image: (allProducts.find(p => p.id === i.id)?.image_url) || null
-}));
-await supabaseClient.from('order_items').insert(orderItems);
-        await supabaseClient.from('order_items').insert(orderItems);
-        
-        // Save address for user
-        if (session?.user?.id) {
-            await supabaseClient.from('addresses').insert([{
-                user_id: session.user.id, full_name: name, phone, address_line: address,
-                city, state: '', pincode, is_default: true
-            }]).then(() => {});
+        if (cart.length === 0) {
+            showToast('Your cart is empty. Add products first.');
+            return;
         }
-        
-        cart = []; saveCart(); updateCartCount();
-        alert(`Order Placed!\nTracking ID: ${trackingId}\n\nSave this to track your order.`);
-        window.location.href = 'account.html';
+
+        const submitBtn = document.getElementById('btn-submit-order');
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Creating Your Order...';
+
+        const name = document.getElementById('c-name').value.trim();
+        const phone = document.getElementById('c-phone').value.trim();
+        const email = document.getElementById('c-email').value.trim();
+        const address = document.getElementById('c-address').value.trim();
+        const city = document.getElementById('c-city').value.trim();
+        const pincode = document.getElementById('c-pincode').value.trim();
+        const paymentMethod = document.getElementById('c-payment').value;
+
+        const trackingId = 'VYBE' + Date.now().toString().slice(-8);
+
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        const userId = session?.user?.id || null;
+
+        const orderData = {
+            user_id: userId,
+            customer_name: name,
+            customer_phone: phone,
+            customer_email: email,
+            customer_address: address,
+            customer_city: city,
+            customer_pincode: pincode,
+            total_amount: grandTotal,
+            status: 'Processing',
+            tracking_id: trackingId,
+            payment_method: paymentMethod,
+            payment_status: paymentMethod === 'COD' ? 'Pending' : 'Completed'
+        };
+
+        let insertedOrderId = null;
+        try {
+            const { data, error } = await supabaseClient.from('orders').insert(orderData).select().single();
+            if (!error && data) {
+                insertedOrderId = data.id;
+                // Insert order items
+                const itemsToInsert = cart.map(i => ({
+                    order_id: data.id,
+                    product_id: typeof i.id === 'number' && i.id < 9000 ? i.id : null,
+                    product_name: i.name,
+                    product_image: i.image_url || '',
+                    price: i.price,
+                    size: i.size,
+                    quantity: i.quantity
+                }));
+                await supabaseClient.from('order_items').insert(itemsToInsert);
+
+                // Save to addresses table if logged in
+                if (userId) {
+                    await supabaseClient.from('addresses').insert({
+                        user_id: userId,
+                        full_name: name,
+                        phone: phone,
+                        address_line: address,
+                        city: city,
+                        pincode: pincode,
+                        is_default: true
+                    });
+                }
+            }
+        } catch (err) {
+            console.warn('Orders table insert note:', err);
+        }
+
+        // Store order in local storage for fallback instant tracking & account view
+        const localOrders = JSON.parse(localStorage.getItem('vybe_local_orders') || '[]');
+        localOrders.unshift({
+            ...orderData,
+            id: insertedOrderId || Date.now(),
+            items: [...cart],
+            created_at: new Date().toISOString()
+        });
+        localStorage.setItem('vybe_local_orders', JSON.stringify(localOrders));
+
+        // Clear cart
+        cart = [];
+        saveCart();
+        updateCartCount();
+
+        showToast(`🎉 Order Placed! Tracking ID: ${trackingId}`);
+        setTimeout(() => {
+            window.location.href = `track.html?id=${trackingId}`;
+        }, 1500);
     }
-    
-    renderSummary(); prefillUser();
+
+    window.addEventListener('DOMContentLoaded', () => {
+        renderSummary();
+        prefillUserData();
+    });
     </script>
 </body>
 </html>

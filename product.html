@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product | VYBE</title>
+    <title>Product Details | VYBE Men's Apparel</title>
+    <meta name="description" content="View product specifications, size guides, pricing, and live bidding options at VYBE.">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+    <!-- HEADER -->
     <header>
-        <a href="index.html" class="logo"><img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img"></a>
+        <a href="index.html" class="logo">
+            <img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img">
+        </a>
         <nav>
             <a href="index.html">Home</a>
             <a href="shop.html">Shop</a>
+            <a href="auction.html" class="nav-auction">⚡ Auctions</a>
             <a href="track.html">Track</a>
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
@@ -20,27 +25,52 @@
         <div class="header-actions">
             <label class="theme-switch" for="theme-checkbox">
                 <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()" />
-                <div class="slider round"><span class="icon sun-icon">☀</span><span class="icon moon-icon">☾</span></div>
+                <div class="slider round">
+                    <span class="icon sun-icon">☀</span>
+                    <span class="icon moon-icon">☾</span>
+                </div>
             </label>
-            <div class="account-icon" id="auth-btn" onclick="openAuthModal()">👤 Login</div>
-            <div class="cart-icon" onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</div>
+            <div class="account-icon" id="auth-btn">👤 Login</div>
+            <div class="cart-icon" onclick="toggleCart()">🛒 Bag (<span id="cart-count">0</span>)</div>
         </div>
     </header>
 
-    <div class="product-detail-page" id="product-detail-page">
-        <div style="text-align:center;padding:60px;grid-column:1/-1;color:var(--muted);">Loading...</div>
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb-trail" id="product-breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-separator">/</span>
+        <a href="shop.html">Shop</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current" id="bc-title">Product Details</span>
     </div>
 
+    <!-- PRODUCT DETAILS CONTAINER -->
+    <main style="min-height: 70vh;">
+        <div class="product-detail-page" id="product-detail-container">
+            <div style="grid-column: 1 / -1; padding: 60px 0; text-align: center; color: var(--muted);">
+                <p>Loading craftsmanship details...</p>
+            </div>
+        </div>
+
+        <!-- RELATED PRODUCTS SECTION -->
+        <section class="products-container" id="related-section" style="padding-top:20px; display:none;">
+            <h3 class="section-title" style="font-size:1.4rem;text-align:left;margin-bottom:20px;" id="related-title">Complete The Vibe</h3>
+            <div id="related-grid" class="product-grid"></div>
+        </section>
+    </main>
+
+    <!-- CART MODAL -->
     <div id="cart-modal" class="modal hidden">
         <div class="modal-content">
             <button class="close" onclick="toggleCart()">&times;</button>
-            <h2 style="margin-bottom:20px;">Your Cart</h2>
+            <h2 style="margin-bottom:20px;font-size:1.5rem;">Your Shopping Bag</h2>
             <div id="cart-items"></div>
             <div class="cart-total" id="cart-total">Total: ₹0</div>
             <button class="place-order-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
         </div>
     </div>
 
+    <!-- AUTH MODAL -->
     <div id="auth-modal" class="modal hidden">
         <div class="modal-content">
             <button class="close" onclick="closeAuthModal()">&times;</button>
@@ -49,67 +79,335 @@
                 <button data-tab="signup" onclick="switchAuthTab('signup')">Sign Up</button>
             </div>
             <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
-                <input type="text" id="login-email" placeholder="Mobile Number or Email" required>
+                <input type="text" id="login-email" placeholder="10-digit Mobile Number or Email" required>
                 <input type="password" id="login-password" placeholder="Password" required>
                 <button type="submit">Login</button>
             </form>
             <form id="signup-form" class="auth-form hidden" onsubmit="handleSignup(event)">
                 <input type="text" id="signup-name" placeholder="Full Name" required>
                 <input type="tel" id="signup-phone" placeholder="10-digit Mobile Number" pattern="[0-9]{10}" required>
-                <input type="email" id="signup-email" placeholder="Email" required>
-                <input type="password" id="signup-password" placeholder="Password (min 6 chars)" minlength="6" required>
+                <input type="email" id="signup-email" placeholder="Email Address" required>
+                <input type="password" id="signup-password" placeholder="Password (min 6 characters)" minlength="6" required>
                 <button type="submit">Create Account</button>
             </form>
         </div>
     </div>
 
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h3>ABOUT VYBE</h3>
+                <p>We design, stitch, and deliver premium apparel. From everyday wear to signature luxury.</p>
+            </div>
+            <div>
+                <h3>QUICK LINKS</h3>
+                <p><a href="shop.html">Shop All</a></p>
+                <p><a href="auction.html">Live Auctions</a></p>
+                <p><a href="track.html">Track Order</a></p>
+                <p><a href="account.html">My Account</a></p>
+            </div>
+            <div>
+                <h3>CONTACT</h3>
+                <p>Email: <a href="mailto:support@vybe.com" style="color:var(--primary-orange);">support@vybe.com</a></p>
+                <p>Phone: +91 9004844605</p>
+                <p>Karale House, Kongaon, Thane, Mumbai, 421311</p>
+            </div>
+        </div>
+        <p class="copyright">&copy; 2026 VYBE Men's Apparel. All rights reserved.</p>
+    </footer>
+
     <script src="script.js"></script>
     <script src="auth.js"></script>
     <script>
     let selectedSize = null;
-    async function loadProduct() {
-        const id = new URLSearchParams(window.location.search).get('id');
-        if (!id) return;
-        const { data, error } = await supabaseClient.from('products').select('*, categories(name, slug)').eq('id', id).single();
-        if (error || !data) { document.getElementById('product-detail-page').innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:60px;">Product not found</p>'; return; }
-        
-        const p = data;
-        const discount = p.mrp && p.mrp > p.price ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0;
-        const sizes = p.sizes && p.sizes.length ? p.sizes : ['S','M','L','XL'];
+    let selectedQuantity = 1;
+    let currentProduct = null;
+
+    async function loadProductDetail() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        if (!productId) {
+            window.location.href = 'shop.html';
+            return;
+        }
+
+        let p = null;
+        if (Number(productId) === FLAGSHIP_AUCTION_PRODUCT.id) {
+            const cached = getCachedAuctionData(FLAGSHIP_AUCTION_PRODUCT.id);
+            p = { ...FLAGSHIP_AUCTION_PRODUCT, ...cached };
+        } else {
+            // Check default curated products first
+            p = DEFAULT_PRODUCTS.find(x => x.id === Number(productId));
+            try {
+                const { data, error } = await supabaseClient
+                    .from('products')
+                    .select('*')
+                    .eq('id', productId)
+                    .single();
+
+                if (!error && data) {
+                    p = data;
+                }
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
+        if (!p) {
+            document.getElementById('product-detail-container').innerHTML = `
+            <div class="empty-state">
+                <h2>Product Not Found</h2>
+                <p style="margin-top:10px;"><a href="shop.html" class="btn-primary-lg" style="display:inline-block;">Return to Shop</a></p>
+            </div>`;
+            return;
+        }
+
+        currentProduct = p;
+        const cat = getCategoryInfo(p.category_id);
+        const typeName = getTypeInfo(p.type_id);
+        const typeObj = allTypes.find(t => t.id === p.type_id);
+        const typeSlug = typeObj ? typeObj.slug : 'all';
+
+        // Update breadcrumb
+        const bc = document.getElementById('product-breadcrumb');
+        if (bc) {
+            bc.innerHTML = `
+                <a href="index.html">Home</a>
+                <span class="breadcrumb-separator">/</span>
+                <a href="shop.html">Shop</a>
+                <span class="breadcrumb-separator">/</span>
+                <a href="shop.html?cat=${cat.slug}" style="color:${cat.theme_color};font-weight:600;">${cat.name}</a>
+                <span class="breadcrumb-separator">/</span>
+                <a href="shop.html?cat=${cat.slug}&type=${typeSlug}">${typeName}</a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-current">${p.name}</span>
+            `;
+        }
+
+        const cached = getCachedAuctionData(p.id);
+        const currentBid = cached.current_bid || p.current_bid || p.starting_bid || p.price;
+        const highestBidder = cached.highest_bidder_name || p.highest_bidder_name || 'Starting Price';
+        const maskedBidder = highestBidder.length > 3 ? highestBidder.slice(0, 3) + '***' : highestBidder;
+        const isAuction = p.sale_type === 'auction';
+        const minNextBid = Number(currentBid) + 50;
+
+        const sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ['S', 'M', 'L', 'XL'];
         selectedSize = sizes[0];
-        
-        document.getElementById('product-detail-page').innerHTML = `
-            <div class="product-gallery">
-                <img src="${p.image_url}" class="main-image" id="main-image">
-                <div class="product-thumbs">
-                    <img src="${p.image_url}" class="active" onclick="document.getElementById('main-image').src='${p.image_url}'; setActiveThumb(this);">
-                    ${p.hover_image_url ? `<img src="${p.hover_image_url}" onclick="document.getElementById('main-image').src='${p.hover_image_url}'; setActiveThumb(this);">` : ''}
-                </div>
+
+        const discount = p.mrp && p.mrp > p.price ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0;
+
+        document.title = `${p.name} | VYBE Men's Apparel`;
+
+        document.getElementById('product-detail-container').innerHTML = `
+        <div class="product-gallery">
+            <img src="${p.image_url}" alt="${p.name}" class="main-image" id="detail-main-img">
+            <div class="product-thumbs">
+                <img src="${p.image_url}" alt="${p.name}" class="active" onclick="switchDetailImage(this, '${p.image_url}')">
+                ${p.hover_image_url ? `<img src="${p.hover_image_url}" alt="${p.name} Back View" onclick="switchDetailImage(this, '${p.hover_image_url}')">` : ''}
             </div>
-            <div class="product-info-detail">
-                <p style="color:var(--muted);margin-bottom:10px;">${p.categories?.name || ''}</p>
-                <h1>${p.name}</h1>
-                <div class="price-row">
-                    <span class="price">₹${p.price}</span>
-                    ${discount > 0 ? `<span class="mrp">₹${p.mrp}</span><span class="discount">${discount}% OFF</span>` : ''}
-                </div>
-                <p class="desc">${p.description || 'Premium quality men\'s apparel from VYBE. Crafted with care for the modern man.'}</p>
-                <div class="size-selector">
-                    <h4>Select Size</h4>
-                    <div class="size-options">
-                        ${sizes.map((s, i) => `<button class="size-option ${i === 0 ? 'selected' : ''}" onclick="selectSize(this, '${s}')">${s}</button>`).join('')}
+        </div>
+
+        <div class="product-info-detail">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <span class="badge-cat-pill" style="background:${cat.theme_color}22;color:${cat.theme_color};border:1px solid ${cat.theme_color}66;">
+                    ${cat.name}
+                </span>
+                <span style="color:var(--muted);font-size:0.82rem;font-weight:600;">• ${typeName}</span>
+                ${isAuction ? `<span class="badge-tag badge-auction" style="position:static;">⚡ AUCTION LOT</span>` : ''}
+            </div>
+
+            <h1>${p.name}</h1>
+
+            ${isAuction ? `
+                <div class="detail-auction-panel">
+                    <div class="auction-live-header">
+                        <span class="auction-live-badge">⚡ LIVE AUCTION</span>
+                        <div class="auction-countdown-display">
+                            <span class="auction-timer" data-endtime="${p.auction_end_time || ''}">--:--:--</span>
+                        </div>
+                    </div>
+
+                    <div class="auction-stats-box">
+                        <div>
+                            <span style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;">Current Highest Bid</span>
+                            <div style="font-size:1.6rem;font-weight:900;color:var(--primary-orange);margin-top:2px;">₹${Number(currentBid).toLocaleString('en-IN')}</div>
+                        </div>
+                        <div>
+                            <span style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;">Highest Bidder</span>
+                            <div style="font-size:1.1rem;font-weight:700;color:var(--primary-cyan);margin-top:4px;">${maskedBidder}</div>
+                        </div>
+                    </div>
+
+                    <form onsubmit="handlePlaceBid(event)" class="bid-form-group">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                            <input type="text" id="bid-name" placeholder="Your Full Name" required>
+                            <input type="tel" id="bid-phone" placeholder="10-digit Phone" pattern="[0-9]{10}" required>
+                        </div>
+                        <div style="position:relative;">
+                            <input type="number" id="bid-amount" min="${minNextBid}" step="50" value="${minNextBid}" placeholder="Bid Amount (Min ₹${minNextBid})" required style="width:100%;font-weight:700;color:var(--primary-gold);">
+                        </div>
+                        <span class="bid-form-note">Minimum increment: ₹50 above current bid (₹${minNextBid.toLocaleString('en-IN')})</span>
+                        <button type="submit" class="btn-primary-lg" style="width:100%;border-radius:12px;background:linear-gradient(135deg,#FFD700,#FF8C00);color:#000;">
+                            🔨 Place Bid
+                        </button>
+                    </form>
+
+                    <div class="recent-bids-list">
+                        <h4>Live Bidding Activity</h4>
+                        <div class="bid-history-row">
+                            <span>${maskedBidder}</span>
+                            <strong style="color:var(--primary-gold);">₹${Number(currentBid).toLocaleString('en-IN')}</strong>
+                            <span style="color:var(--muted);">Just now</span>
+                        </div>
+                        <div class="bid-history-row">
+                            <span>Starting Reserve</span>
+                            <strong>₹${Number(p.starting_bid || currentBid - 500).toLocaleString('en-IN')}</strong>
+                            <span style="color:var(--muted);">Opening</span>
+                        </div>
                     </div>
                 </div>
-                <div class="detail-actions">
-                    <button class="btn-add-cart" onclick="addToCart(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price}, selectedSize)">Add to Cart</button>
-                    <button class="btn-buy-now" onclick="buyNow(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price}, selectedSize)">Buy Now</button>
+            ` : `
+                <div class="price-row">
+                    <span class="price">₹${Number(p.price).toLocaleString('en-IN')}</span>
+                    ${discount > 0 ? `
+                        <span class="mrp">₹${Number(p.mrp).toLocaleString('en-IN')}</span>
+                        <span class="discount">${discount}% OFF</span>
+                    ` : ''}
+                </div>
+            `}
+
+            <div class="desc">${p.description || 'Premium heavyweight garment crafted with master tailoring and luxury textures.'}</div>
+
+            <div class="size-selector">
+                <div class="detail-section-title">Select Size:</div>
+                <div class="size-options">
+                    ${sizes.map((s, idx) => `
+                        <button class="size-option ${idx === 0 ? 'selected' : ''}" onclick="selectDetailSize(this, '${s}')">${s}</button>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div class="qty-selector-group">
+                <span class="detail-section-title" style="margin:0;">Quantity:</span>
+                <div class="qty-counter">
+                    <button onclick="changeDetailQty(-1)">−</button>
+                    <span id="detail-qty">1</span>
+                    <button onclick="changeDetailQty(1)">+</button>
+                </div>
+            </div>
+
+            <div class="detail-actions">
+                <button class="btn-add-cart" onclick="addDetailToCart()">
+                    Add to Bag
+                </button>
+                <button class="btn-buy-now" onclick="buyNow()">
+                    ${isAuction ? `Instant Buy (₹${Number(p.price || 6999).toLocaleString('en-IN')})` : 'Instant Checkout'}
+                </button>
+            </div>
+        </div>`;
+
+        startAuctionCountdownTicker();
+        renderRelatedProducts(p);
+
+        // Prefill bidder info if logged in
+        if (currentUser) {
+            const nameInput = document.getElementById('bid-name');
+            const phoneInput = document.getElementById('bid-phone');
+            if (nameInput && userProfile?.full_name) nameInput.value = userProfile.full_name;
+            if (phoneInput && userProfile?.phone) phoneInput.value = userProfile.phone;
+        }
+    }
+
+    function renderRelatedProducts(prod) {
+        const relatedSection = document.getElementById('related-section');
+        const relatedGrid = document.getElementById('related-grid');
+        if (!relatedSection || !relatedGrid) return;
+
+        const related = allProducts.filter(x => x.id !== prod.id && (x.category_id === prod.category_id || x.type_id === prod.type_id)).slice(0, 4);
+        if (related.length === 0) return;
+
+        relatedSection.style.display = 'block';
+        relatedGrid.innerHTML = related.map(p => {
+            const cat = getCategoryInfo(p.category_id);
+            const typeName = getTypeInfo(p.type_id);
+            const isAuction = p.sale_type === 'auction';
+            const displayPrice = isAuction ? (p.current_bid || p.starting_bid) : p.price;
+            return `
+            <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
+                <span class="badge-category-type">
+                    <span class="cat-dot cat-dot-${cat.slug}"></span>
+                    ${cat.name.replace('VYBE ', '')} • ${typeName}
+                </span>
+                <div class="product-image-wrapper">
+                    <img src="${p.image_url}" alt="${p.name}" class="main-img" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <span class="product-category-meta" style="color:${cat.theme_color};">${cat.name}</span>
+                    <h3 style="font-size:0.95rem;">${p.name}</h3>
+                    <div class="product-price-row">
+                        <span class="price">₹${Number(displayPrice).toLocaleString('en-IN')}</span>
+                    </div>
+                    <button class="btn-add" onclick="event.stopPropagation(); window.location.href='product.html?id=${p.id}'">View Garment</button>
                 </div>
             </div>`;
+        }).join('');
     }
-    function selectSize(el, size) { document.querySelectorAll('.size-option').forEach(o => o.classList.remove('selected')); el.classList.add('selected'); selectedSize = size; }
-    function setActiveThumb(el) { document.querySelectorAll('.product-thumbs img').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
-    function buyNow(id, name, price, size) { addToCart(id, name, price, size); setTimeout(() => window.location.href = 'checkout.html', 600); }
-    loadProduct();
+
+    function switchDetailImage(thumbEl, src) {
+        document.querySelectorAll('.product-thumbs img').forEach(i => i.classList.remove('active'));
+        thumbEl.classList.add('active');
+        const mainImg = document.getElementById('detail-main-img');
+        if (mainImg) mainImg.src = src;
+    }
+
+    function selectDetailSize(btn, size) {
+        document.querySelectorAll('.size-option').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedSize = size;
+    }
+
+    function changeDetailQty(delta) {
+        selectedQuantity = Math.max(1, selectedQuantity + delta);
+        const qtyEl = document.getElementById('detail-qty');
+        if (qtyEl) qtyEl.innerText = selectedQuantity;
+    }
+
+    function addDetailToCart() {
+        if (!currentProduct) return;
+        for (let i = 0; i < selectedQuantity; i++) {
+            addToCart(currentProduct.id, currentProduct.name, currentProduct.price, selectedSize, currentProduct.image_url);
+        }
+    }
+
+    function buyNow() {
+        if (!currentProduct) return;
+        addDetailToCart();
+        window.location.href = 'checkout.html';
+    }
+
+    async function handlePlaceBid(e) {
+        e.preventDefault();
+        if (!currentProduct) return;
+
+        const name = document.getElementById('bid-name').value.trim();
+        const phone = document.getElementById('bid-phone').value.trim();
+        const amount = Number(document.getElementById('bid-amount').value);
+
+        const currentBid = currentProduct.current_bid || currentProduct.starting_bid || currentProduct.price;
+        if (amount < Number(currentBid) + 50) {
+            showToast(`Bid must be at least ₹${(Number(currentBid) + 50).toLocaleString('en-IN')}`);
+            return;
+        }
+
+        const success = await placeAuctionBid(currentProduct.id, name, phone, amount);
+        if (success) {
+            setTimeout(loadProductDetail, 700);
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadProductDetail);
     </script>
 </body>
 </html>

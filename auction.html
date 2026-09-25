@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Auctions | VYBE Collector's Vault</title>
+    <meta name="description" content="Bid on ultra-exclusive, 1-of-1 handcrafted drops from the VYBE Signature Collection. Real-time bidding and authentic collector lots.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <a href="index.html" class="logo">
+            <img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img">
+        </a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="auction.html" class="active nav-auction">⚡ Auctions</a>
+            <a href="track.html">Track</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+        <div class="header-actions">
+            <label class="theme-switch" for="theme-checkbox">
+                <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()" />
+                <div class="slider round">
+                    <span class="icon sun-icon">☀</span>
+                    <span class="icon moon-icon">☾</span>
+                </div>
+            </label>
+            <div class="account-icon" id="auth-btn">👤 Login</div>
+            <div class="cart-icon" onclick="toggleCart()">🛒 Bag (<span id="cart-count">0</span>)</div>
+        </div>
+    </header>
+
+    <!-- AUCTION HERO BANNER -->
+    <div class="auction-hero-banner">
+        <span class="badge-tag badge-auction" style="position:static;display:inline-block;margin-bottom:12px;">⚡ THE COLLECTOR'S VAULT</span>
+        <h1>LIVE SIGNATURE AUCTIONS</h1>
+        <p style="color:var(--muted);max-width:680px;margin:0 auto 10px;font-size:1.05rem;">
+            One-of-a-kind bespoke creations, master-tailored collector pieces, and numbered runs. Bid in real time to secure exclusive apparel crafted beyond ordinary.
+        </p>
+    </div>
+
+    <!-- AUCTION ITEMS CONTAINER -->
+    <main style="min-height: 50vh;">
+        <div class="auction-grid" id="auction-grid">
+            <!-- Dynamically populated or rendered -->
+        </div>
+    </main>
+
+    <!-- CART MODAL -->
+    <div id="cart-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close" onclick="toggleCart()">&times;</button>
+            <h2 style="margin-bottom:20px;font-size:1.5rem;">Your Shopping Bag</h2>
+            <div id="cart-items"></div>
+            <div class="cart-total" id="cart-total">Total: ₹0</div>
+            <button class="place-order-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL -->
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close" onclick="closeAuthModal()">&times;</button>
+            <div class="auth-tabs">
+                <button class="active" data-tab="login" onclick="switchAuthTab('login')">Login</button>
+                <button data-tab="signup" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+            <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+                <input type="text" id="login-email" placeholder="10-digit Mobile Number or Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <form id="signup-form" class="auth-form hidden" onsubmit="handleSignup(event)">
+                <input type="text" id="signup-name" placeholder="Full Name" required>
+                <input type="tel" id="signup-phone" placeholder="10-digit Mobile Number" pattern="[0-9]{10}" required>
+                <input type="email" id="signup-email" placeholder="Email Address" required>
+                <input type="password" id="signup-password" placeholder="Password (min 6 characters)" minlength="6" required>
+                <button type="submit">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h3>ABOUT VYBE</h3>
+                <p>We design, stitch, and deliver premium apparel. From everyday wear to signature luxury.</p>
+            </div>
+            <div>
+                <h3>QUICK LINKS</h3>
+                <p><a href="shop.html">Shop</a></p>
+                <p><a href="auction.html">Live Auctions</a></p>
+                <p><a href="track.html">Track Order</a></p>
+                <p><a href="account.html">My Account</a></p>
+            </div>
+            <div>
+                <h3>CONTACT</h3>
+                <p>Email: <a href="mailto:support@vybe.com" style="color:var(--primary-orange);">support@vybe.com</a></p>
+                <p>Phone: +91 9004844605</p>
+                <p>Karale House, Kongaon, Thane, Mumbai, 421311</p>
+            </div>
+        </div>
+        <p class="copyright">&copy; 2026 VYBE Men's Apparel. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+    async function loadAuctions() {
+        const grid = document.getElementById('auction-grid');
+        if (!grid) return;
+
+        let auctionProducts = [];
+        try {
+            const { data, error } = await supabaseClient
+                .from('products')
+                .select('*, categories(name, slug)')
+                .eq('sale_type', 'auction')
+                .eq('is_active', true);
+
+            if (!error && data && data.length > 0) {
+                auctionProducts = data;
+            }
+        } catch (e) {
+            console.warn('Auction fetch note:', e);
+        }
+
+        // Include the flagship auction piece
+        if (!auctionProducts.some(p => p.id === FLAGSHIP_AUCTION_PRODUCT.id || p.name.includes("King #1"))) {
+            const cached = getCachedAuctionData(FLAGSHIP_AUCTION_PRODUCT.id);
+            auctionProducts.unshift({ ...FLAGSHIP_AUCTION_PRODUCT, ...cached });
+        }
+
+        if (auctionProducts.length === 0) {
+            grid.innerHTML = `
+            <div class="empty-state">
+                <h3>No active auctions</h3>
+                <p>Check back soon for the next exclusive vault release.</p>
+            </div>`;
+            return;
+        }
+
+        grid.innerHTML = auctionProducts.map(p => {
+            const cached = getCachedAuctionData(p.id);
+            const currentBid = cached.current_bid || p.current_bid || p.starting_bid || p.price;
+            const bidderName = cached.highest_bidder_name || p.highest_bidder_name || 'Starting Price';
+            const maskedBidder = bidderName.length > 3 ? bidderName.slice(0, 3) + '***' : bidderName;
+            const totalBids = cached.bids_count || (p.current_bid ? 3 : 0);
+
+            return `
+            <div class="auction-card" onclick="window.location.href='product.html?id=${p.id}'">
+                <div class="card-media">
+                    <img src="${p.image_url}" alt="${p.name}">
+                    <div class="auction-timer-banner">
+                        <span>Time Remaining:</span>
+                        <strong class="auction-timer" data-endtime="${p.auction_end_time || ''}">--:--:--</strong>
+                    </div>
+                </div>
+                <div class="auction-card-body">
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--primary-purple);text-transform:uppercase;letter-spacing:1px;">
+                        ${p.categories?.name || 'Signature'} • LOT #${p.id}
+                    </span>
+                    <h3 style="font-size:1.2rem;font-weight:800;">${p.name}</h3>
+                    <p style="color:var(--muted);font-size:0.88rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                        ${p.description || 'Exclusive collector edition handcrafted apparel.'}
+                    </p>
+
+                    <div class="auction-bid-stats">
+                        <div class="stat-item">
+                            <span>Current Bid</span>
+                            <strong>₹${Number(currentBid).toLocaleString('en-IN')}</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Highest Bidder</span>
+                            <strong style="color:var(--primary-cyan);font-size:0.95rem;">${maskedBidder}</strong>
+                        </div>
+                    </div>
+
+                    <button class="btn-bid-auction" onclick="event.stopPropagation(); window.location.href='product.html?id=${p.id}'">
+                        🔨 Place Bid (${totalBids} bids)
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+
+        startAuctionCountdownTicker();
+    }
+
+    window.addEventListener('DOMContentLoaded', loadAuctions);
+    </script>
+</body>
+</html>

@@ -3,55 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VYBE | Premium Men's Apparel</title>
+    <title>VYBE | Crafted Beyond Ordinary — Premium Men's Apparel</title>
+    <meta name="description" content="VYBE is an exclusive destination for premium men's apparel. Discover our Everyday, Studio, and Signature luxury lines and live collector auctions.">
+    <meta property="og:title" content="VYBE | Crafted Beyond Ordinary — Premium Men's Apparel">
+    <meta property="og:description" content="Everyday wear to signature luxury tailoring. Exclusive drops and live collector auctions.">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+    <!-- HEADER -->
     <header>
-        <a href="index.html" class="logo"><img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img"></a>
+        <a href="index.html" class="logo">
+            <img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img">
+        </a>
         <nav>
-            <a href="index.html">Home</a>
+            <a href="index.html" class="active">Home</a>
             <a href="shop.html">Shop</a>
+            <a href="auction.html" class="nav-auction">⚡ Auctions</a>
             <a href="track.html">Track</a>
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
         </nav>
         <div class="header-actions">
-            <label class="theme-switch" for="theme-checkbox">
+            <label class="theme-switch" for="theme-checkbox" title="Toggle Dark/Light Mode">
                 <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()" />
-                <div class="slider round"><span class="icon sun-icon">☀</span><span class="icon moon-icon">☾</span></div>
+                <div class="slider round">
+                    <span class="icon sun-icon">☀</span>
+                    <span class="icon moon-icon">☾</span>
+                </div>
             </label>
-            <div class="account-icon" id="auth-btn" onclick="openAuthModal()">👤 Login</div>
-            <div class="cart-icon" onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</div>
+            <div class="account-icon" id="auth-btn">👤 Login</div>
+            <div class="cart-icon" onclick="toggleCart()">🛒 Bag (<span id="cart-count">0</span>)</div>
         </div>
     </header>
 
     <!-- BANNER CAROUSEL -->
     <div class="banner-carousel" id="banner-carousel"></div>
 
-    <!-- HERO -->
-    <section id="home" class="hero" id="hero-section">
-    <h1>CRAFTED BEYOND ORDINARY.</h1>
-    <p>Premium Men's Apparel designed for every vibe.</p>
-    <button class="btn-primary-lg" onclick="scrollToShop()">Explore Collection</button>
-</section>
+    <!-- HERO (Shows if banners are loading or none) -->
+    <section class="hero" id="hero-section">
+        <h1>CRAFTED BEYOND ORDINARY.</h1>
+        <p>Precision-engineered apparel designed for every facet of your life. Everyday ease meets signature luxury.</p>
+        <div class="hero-actions">
+            <button class="btn-primary-lg" onclick="scrollToShop()">Explore Collection</button>
+            <a href="auction.html" class="btn-secondary-lg">Live Auctions</a>
+        </div>
+    </section>
 
-    <section id="shop" class="categories">
-        <h2>Select Your Vibe</h2>
+    <!-- 3 BRAND LINES / CATEGORIES (BADA LOGOS) -->
+    <section class="categories" id="categories-section">
+        <h2 class="section-title">Select Your Vibe</h2>
+        <p class="section-subtitle">Engineered across three distinct wardrobe philosophies</p>
+        
+        <div class="brand-lines-container">
+            <div class="brand-line-card card-everyday" onclick="window.location.href='shop.html?category=everyday'">
+                <img src="/assets/images/everyday_logo.jpg" alt="VYBE Everyday" class="brand-line-bada-logo">
+            </div>
+
+            <div class="brand-line-card card-studio" onclick="window.location.href='shop.html?category=studio'">
+                <img src="/assets/images/studio_logo.jpg" alt="VYBE Studio" class="brand-line-bada-logo">
+            </div>
+
+            <div class="brand-line-card card-signature" onclick="window.location.href='shop.html?category=signature'">
+                <img src="/assets/images/signature_logo.jpg" alt="VYBE Signature" class="brand-line-bada-logo">
+            </div>
+        </div>
+
         <div class="category-buttons" id="category-buttons"></div>
     </section>
 
-    <section class="products-container">
-        <h2 id="category-title">All Products</h2>
+    <!-- SHOP BY TYPE SECTION -->
+    <section class="shop-by-type-section" id="shop-by-type">
+        <h2 class="section-title" style="text-align:center;">Shop by Type</h2>
+        <p class="section-subtitle" style="text-align:center;margin-bottom:35px;">Curated silhouettes and essentials across all wardrobe lines</p>
+        
+        <div id="homepage-shop-by-type">
+            <!-- Initial static structure with Unsplash type images & fallback gradient support -->
+            <!-- Under Everyday -->
+            <div class="type-category-group">
+                <div class="type-group-header">
+                    <div class="type-group-title">
+                        <span class="cat-dot cat-dot-everyday" style="width:10px;height:10px;"></span>
+                        <span>Under Everyday</span>
+                    </div>
+                    <a href="shop.html?category=everyday" class="type-view-all-link" style="color:var(--primary-orange);">
+                        View All Everyday →
+                    </a>
+                </div>
+                <div class="type-cards-grid">
+                    <a href="shop.html?category=everyday&type=men-fashion" class="type-showcase-card everyday-type">
+                        <div class="type-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=400" alt="Men Fashion" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'type-gradient-placeholder type-gradient-everyday\'><span>Men Fashion</span></div>'">
+                        </div>
+                        <div class="type-card-info">
+                            <span class="type-card-name">Men Fashion</span>
+                            <span class="type-card-count">24 items</span>
+                        </div>
+                    </a>
+                    <a href="shop.html?category=everyday&type=women" class="type-showcase-card everyday-type">
+                        <div class="type-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400" alt="Women" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'type-gradient-placeholder type-gradient-everyday\'><span>Women</span></div>'">
+                        </div>
+                        <div class="type-card-info">
+                            <span class="type-card-name">Women</span>
+                            <span class="type-card-count">18 items</span>
+                        </div>
+                    </a>
+                    <a href="shop.html?category=everyday&type=kids" class="type-showcase-card everyday-type">
+                        <div class="type-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=400" alt="Kids" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'type-gradient-placeholder type-gradient-everyday\'><span>Kids</span></div>'">
+                        </div>
+                        <div class="type-card-info">
+                            <span class="type-card-name">Kids</span>
+                            <span class="type-card-count">12 items</span>
+                        </div>
+                    </a>
+                    <a href="shop.html?category=everyday&type=casual-wear" class="type-showcase-card everyday-type">
+                        <div class="type-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400" alt="Casual Wear" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'type-gradient-placeholder type-gradient-everyday\'><span>Casual Wear</span></div>'">
+                        </div>
+                        <div class="type-card-info">
+                            <span class="type-card-name">Casual Wear</span>
+                            <span class="type-card-count">30 items</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="type-row-footer">
+                    <a href="shop.html?category=everyday" class="type-view-all-link-end" style="color:var(--primary-orange);">
+                        View All Everyday →
+                    </a>
+                </div>
+            </div>
+
+            <!-- Under Studio -->
+            <div class="type-category-group">
+                <div class="type-group-header">
+                    <div class="type-group-title">
+                        <span class="cat-dot cat-dot-studio" style="width:10px;height:10px;"></span>
+                        <span>Under Studio</span>
+                    </div>
+                    <a href="shop.html?category=studio" class="type-view-all-link" style="color:var(--primary-cyan);">
+                        View All Studio →
+                    </a>
+                </div>
+                <div class="type-cards-grid">
+                    <a href="shop.html?category=studio&type=formal-shirts" class="type-showcase-card studio-type">
+                        <div class="type-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400" alt="Formal Shirts" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'type-gradient-placeholder type-gradient-studio\'><span>Formal Shirts</span></div>'">
+                        </div>
+                        <div class="type-card-info">
+                            <span class="type-card-name">Formal Shirts</span>
+                            <span class="type-card-count">20 items</span>
+                        </div>
+                    </a>
+                    <a href="shop.html?category=studio&type=blazers" class="type-showcase-card studio-type">
+                        <div class="type-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400" alt="Blazers" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'type-gradient-placeholder type-gradient-studio\'><span>Blazers</span></div>'">
+                        </div>
+                        <div class="type-card-info">
+                            <span class="type-card-name">Blazers</span>
+                            <span class="type-card-count">15 items</span>
+                        </div>
+                    </a>
+                    <a href="shop.html?category=studio&type=party-wear" class="type-showcase-card studio-type">
+                        <div class="type-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=400" alt="Party Wear" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'type-gradient-placeholder type-gradient-studio\'><span>Party Wear</span></div>'">
+                        </div>
+                        <div class="type-card-info">
+                            <span class="type-card-name">Party Wear</span>
+                            <span class="type-card-count">18 items</span>
+                        </div>
+                    </a>
+                    <a href="shop.html?category=studio&type=footwear" class="type-showcase-card studio-type">
+                        <div class="type-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400" alt="Footwear" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'type-gradient-placeholder type-gradient-studio\'><span>Footwear</span></div>'">
+                        </div>
+                        <div class="type-card-info">
+                            <span class="type-card-name">Footwear</span>
+                            <span class="type-card-count">22 items</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="type-row-footer">
+                    <a href="shop.html?category=studio" class="type-view-all-link-end" style="color:var(--primary-cyan);">
+                        View All Studio →
+                    </a>
+                </div>
+            </div>
+
+            <!-- Under Signature -->
+            <div class="type-category-group">
+                <div class="type-group-header">
+                    <div class="type-group-title">
+                        <span class="cat-dot cat-dot-signature" style="width:10px;height:10px;"></span>
+                        <span>Under Signature</span>
+                    </div>
+                    <a href="shop.html?category=signature" class="type-view-all-link" style="color:var(--primary-purple);">
+                        View All Signature →
+                    </a>
+                </div>
+                <div class="type-cards-grid">
+                    <a href="shop.html?category=signature&type=premium-suits" class="type-showcase-card signature-type">
+                        <div class="type-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400" alt="Premium Suits" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'type-gradient-placeholder type-gradient-signature\'><span>Premium Suits</span></div>'">
+                        </div>
+                        <div class="type-card-info">
+                            <span class="type-card-name">Premium Suits</span>
+                            <span class="type-card-count">10 items</span>
+                        </div>
+                    </a>
+                    <a href="shop.html?category=signature&type=watches" class="type-showcase-card signature-type">
+                        <div class="type-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=400" alt="Watches" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'type-gradient-placeholder type-gradient-signature\'><span>Watches</span></div>'">
+                        </div>
+                        <div class="type-card-info">
+                            <span class="type-card-name">Watches</span>
+                            <span class="type-card-count">14 items</span>
+                        </div>
+                    </a>
+                    <a href="shop.html?category=signature&type=jewelry" class="type-showcase-card signature-type">
+                        <div class="type-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400" alt="Jewelry" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'type-gradient-placeholder type-gradient-signature\'><span>Jewelry</span></div>'">
+                        </div>
+                        <div class="type-card-info">
+                            <span class="type-card-name">Jewelry</span>
+                            <span class="type-card-count">16 items</span>
+                        </div>
+                    </a>
+                    <a href="shop.html?category=signature&type=accessories" class="type-showcase-card signature-type">
+                        <div class="type-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400" alt="Accessories" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'type-gradient-placeholder type-gradient-signature\'><span>Accessories</span></div>'">
+                        </div>
+                        <div class="type-card-info">
+                            <span class="type-card-name">Accessories</span>
+                            <span class="type-card-count">25 items</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="type-row-footer">
+                    <a href="shop.html?category=signature" class="type-view-all-link-end" style="color:var(--primary-purple);">
+                        View All Signature →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIVE AUCTION BANNER SPOTLIGHT -->
+    <section style="background: linear-gradient(135deg, rgba(138,43,226,0.15) 0%, rgba(255,140,0,0.1) 100%); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 45px 5%;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 30px;">
+            <div style="max-width: 600px;">
+                <span class="badge-tag badge-auction" style="position:static;display:inline-block;margin-bottom:12px;">⚡ COLLECTOR'S AUCTION</span>
+                <h2 style="font-size:clamp(1.8rem, 3vw, 2.4rem);font-weight:900;margin-bottom:10px;">LOT 1/1: VYBE KING'S EDITION</h2>
+                <p style="color:var(--muted);font-size:1rem;margin-bottom:20px;">Limited numbered collector's hoodie with 3D gold royal crown embroidery and purple amethyst accents. Place your bid before the timer expires.</p>
+                <a href="product.html?id=9999" class="btn-primary-lg" style="display:inline-block;">View Live Auction</a>
+            </div>
+            <div style="width: 280px; aspect-ratio: 1/1; border-radius: 16px; overflow: hidden; border: 2px solid var(--primary-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <img src="/assets/images/king_hoodie_front.jpg" alt="King #1 Hoodie" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED PRODUCTS -->
+    <section class="products-container" id="shop">
+        <h2 id="category-title" class="section-title" style="text-align:center;">Featured Creations</h2>
+        <p class="section-subtitle" style="text-align:center;">Explore our newest arrivals and limited drops</p>
         <div id="product-grid" class="product-grid"></div>
+        <div style="text-align:center;margin-top:40px;">
+            <a href="shop.html" class="btn-secondary-lg" style="display:inline-block;">View Full Catalog</a>
+        </div>
     </section>
 
     <!-- CART MODAL -->
     <div id="cart-modal" class="modal hidden">
         <div class="modal-content">
             <button class="close" onclick="toggleCart()">&times;</button>
-            <h2 style="margin-bottom:20px;">Your Cart</h2>
+            <h2 style="margin-bottom:20px;font-size:1.5rem;">Your Shopping Bag</h2>
             <div id="cart-items"></div>
             <div class="cart-total" id="cart-total">Total: ₹0</div>
             <button class="place-order-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
@@ -67,27 +294,44 @@
                 <button data-tab="signup" onclick="switchAuthTab('signup')">Sign Up</button>
             </div>
             <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
-                <input type="text" id="login-email" placeholder="Mobile Number or Email" required>
+                <input type="text" id="login-email" placeholder="10-digit Mobile Number or Email" required>
                 <input type="password" id="login-password" placeholder="Password" required>
                 <button type="submit">Login</button>
             </form>
             <form id="signup-form" class="auth-form hidden" onsubmit="handleSignup(event)">
                 <input type="text" id="signup-name" placeholder="Full Name" required>
                 <input type="tel" id="signup-phone" placeholder="10-digit Mobile Number" pattern="[0-9]{10}" required>
-                <input type="email" id="signup-email" placeholder="Email" required>
-                <input type="password" id="signup-password" placeholder="Password (min 6 chars)" minlength="6" required>
+                <input type="email" id="signup-email" placeholder="Email Address" required>
+                <input type="password" id="signup-password" placeholder="Password (min 6 characters)" minlength="6" required>
                 <button type="submit">Create Account</button>
             </form>
         </div>
     </div>
 
+    <!-- FOOTER -->
     <footer>
         <div class="footer-content">
-            <div><h3>ABOUT VYBE</h3><p>We design, stitch, and deliver premium apparel. From everyday wear to signature luxury.</p></div>
-            <div><h3>QUICK LINKS</h3><p><a href="shop.html">Shop</a></p><p><a href="track.html">Track Order</a></p><p><a href="account.html">My Account</a></p></div>
-            <div><h3>CONTACT</h3><p>Email: support@vybe.com</p><p>Phone: +91 9004844605</p><p>Karale House, Kongaon, Thane, Mumbai, 421311</p></div>
+            <div>
+                <h3>ABOUT VYBE</h3>
+                <p>We design, stitch, and deliver premium menswear. From everyday comfort to signature tailored luxury.</p>
+                <p style="font-size:0.85rem;color:var(--muted);margin-top:12px;">Tagline: <em>"Crafted Beyond Ordinary"</em></p>
+            </div>
+            <div>
+                <h3>QUICK LINKS</h3>
+                <p><a href="shop.html">Shop All</a></p>
+                <p><a href="auction.html">Live Auctions</a></p>
+                <p><a href="track.html">Track Order</a></p>
+                <p><a href="account.html">My Account</a></p>
+                <p><a href="about.html">About Us</a></p>
+            </div>
+            <div>
+                <h3>STUDIO & CONCIERGE</h3>
+                <p>Email: <a href="mailto:support@vybe.com" style="color:var(--primary-orange);">support@vybe.com</a></p>
+                <p>Phone: +91 9004844605</p>
+                <p>Karale House, Kongaon, Thane, Mumbai, 421311</p>
+            </div>
         </div>
-        <a href="admin.html" style="color:#333;font-size:11px;text-decoration:none;display:block;text-align:center;">Admin</a>
+        <a href="admin.html" style="color:var(--muted);font-size:11px;text-decoration:none;display:block;text-align:center;margin-bottom:10px;">Admin Portal</a>
         <p class="copyright">&copy; 2026 VYBE Men's Apparel. All rights reserved.</p>
     </footer>
 

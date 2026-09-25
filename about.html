@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track Your Order | VYBE Men's Apparel</title>
-    <meta name="description" content="Real-time order tracking for VYBE bespoke apparel. Enter your Tracking ID to monitor stitching and transit status.">
+    <title>About Us | VYBE — Crafted Beyond Ordinary</title>
+    <meta name="description" content="Discover the story and master craftsmanship behind VYBE. We design, stitch, and deliver premium apparel.">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -18,8 +18,8 @@
             <a href="index.html">Home</a>
             <a href="shop.html">Shop</a>
             <a href="auction.html" class="nav-auction">⚡ Auctions</a>
-            <a href="track.html" class="active">Track</a>
-            <a href="about.html">About</a>
+            <a href="track.html">Track</a>
+            <a href="about.html" class="active">About</a>
             <a href="contact.html">Contact</a>
         </nav>
         <div class="header-actions">
@@ -35,25 +35,43 @@
         </div>
     </header>
 
-    <div class="tracking-container">
-        <h1 class="section-title">Track Your Order</h1>
-        <p class="section-subtitle">Follow your handcrafted garment from studio stitching to doorstep delivery</p>
+    <section class="hero" style="min-height: 45vh;">
+        <span class="badge-tag badge-auction" style="position:static;display:inline-block;margin-bottom:12px;">OUR PHILOSOPHY</span>
+        <h1>CRAFTED BEYOND ORDINARY.</h1>
+        <p>The dedication, master tailoring, and uncompromising standards behind the VYBE wardrobe.</p>
+    </section>
 
-        <div class="tracking-search-box">
-            <input type="text" id="tracking-id" placeholder="Enter Tracking ID (e.g. VYBE12345678)">
-            <button onclick="trackOrder()">Track Status</button>
+    <div style="max-width: 950px; margin: 40px auto; padding: 0 5%;">
+        <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 40px; margin-bottom: 30px;">
+            <h2 style="font-size: 1.8rem; margin-bottom: 16px; color: var(--primary-cyan);">The Genesis of VYBE</h2>
+            <p style="color: var(--muted); line-height: 1.8; margin-bottom: 20px;">
+                At VYBE, we believe clothing is never just about aesthetics—it is a physical expression of ambition, individuality, and self-possession. Founded with the conviction that Indian menswear deserves world-class tailoring and fearless contemporary design, VYBE creates garments that stand apart in any room.
+            </p>
+            <p style="color: var(--muted); line-height: 1.8;">
+                From selecting ultra-breathable long-staple combed cottons and heavyweight French terry to implementing architectural seam-work and 3D metallic embroidery, every silhouette is precision-engineered to look commanding and wear with effortless ease.
+            </p>
         </div>
 
-        <div id="tracking-result">
-            <div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:18px;padding:30px;color:var(--muted);font-size:0.95rem;">
-                <p>Enter your 12-character VYBE Tracking ID generated at checkout.</p>
-                <div style="margin-top:15px;display:flex;justify-content:center;gap:12px;font-size:0.85rem;">
-                    <span>Step 1: Processing</span> •
-                    <span>Step 2: Stitched</span> •
-                    <span>Step 3: Shipped</span> •
-                    <span>Step 4: Delivered</span>
-                </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px;">
+            <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; text-align: center;">
+                <div style="font-size: 2.4rem; margin-bottom: 12px;">🧵</div>
+                <h3 style="margin-bottom: 8px;">Master Tailoring</h3>
+                <p style="color: var(--muted); font-size: 0.9rem;">Clean drops, ergonomic joint ease, and reinforced double-needle seams built to last seasons.</p>
             </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; text-align: center;">
+                <div style="font-size: 2.4rem; margin-bottom: 12px;">✨</div>
+                <h3 style="margin-bottom: 8px;">Signature Fabrics</h3>
+                <p style="color: var(--muted); font-size: 0.9rem;">Proprietary custom-knitted textiles, pre-shrunk, bio-washed, and color-locked for supreme hand-feel.</p>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; text-align: center;">
+                <div style="font-size: 2.4rem; margin-bottom: 12px;">👑</div>
+                <h3 style="margin-bottom: 8px;">Collector's Vault</h3>
+                <p style="color: var(--muted); font-size: 0.9rem;">Exclusive 1-of-1 live auction drops featuring bespoke gold hardware, custom insignia, and numbered lots.</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="shop.html" class="btn-primary-lg" style="display: inline-block;">Discover The Collection</a>
         </div>
     </div>
 
@@ -117,17 +135,5 @@
 
     <script src="script.js"></script>
     <script src="auth.js"></script>
-    <script>
-    window.addEventListener('DOMContentLoaded', () => {
-        const urlId = new URLSearchParams(window.location.search).get('id');
-        if (urlId) {
-            const input = document.getElementById('tracking-id');
-            if (input) {
-                input.value = urlId;
-                trackOrder();
-            }
-        }
-    });
-    </script>
 </body>
 </html>

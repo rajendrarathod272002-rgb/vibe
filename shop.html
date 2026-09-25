@@ -3,65 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop | VYBE</title>
+    <title>Shop Collections | VYBE Men's Apparel</title>
+    <meta name="description" content="Explore VYBE's complete collection of premium men's clothing: Everyday essentials, Studio streetwear, and Signature luxury lots.">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+    <!-- HEADER -->
     <header>
-        <a href="index.html" class="logo"><img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img"></a>
+        <a href="index.html" class="logo">
+            <img src="https://i.ibb.co/yL94f6V/Whats-App-Image-2026-09-21-at-23-09-21-2.jpg" alt="VYBE" class="main-logo-img">
+        </a>
         <nav>
             <a href="index.html">Home</a>
-            <a href="shop.html">Shop</a>
-            <a href="track.html">Track Order</a>
+            <a href="shop.html" class="active">Shop</a>
+            <a href="auction.html" class="nav-auction">⚡ Auctions</a>
+            <a href="track.html">Track</a>
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
         </nav>
         <div class="header-actions">
             <label class="theme-switch" for="theme-checkbox">
                 <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()" />
-                <div class="slider round"><span class="icon sun-icon">☀</span><span class="icon moon-icon">☾</span></div>
+                <div class="slider round">
+                    <span class="icon sun-icon">☀</span>
+                    <span class="icon moon-icon">☾</span>
+                </div>
             </label>
-            <div class="cart-icon" onclick="toggleCart()">Cart (<span id="cart-count">0</span>)</div>
+            <div class="account-icon" id="auth-btn">👤 Login</div>
+            <div class="cart-icon" onclick="toggleCart()">🛒 Bag (<span id="cart-count">0</span>)</div>
         </div>
     </header>
 
-    <section class="categories">
-        <h2>Select Your Vibe</h2>
-        <div class="category-buttons" id="category-buttons"></div>
-    </section>
-<!-- Filter Bar -->
-<div class="filter-bar">
-    <div class="filter-group">
-        <label>Sort By:</label>
-        <select id="sort-select" onchange="applyFilters()">
-            <option value="default">Default</option>
-            <option value="low-high">Price: Low to High</option>
-            <option value="high-low">Price: High to Low</option>
-            <option value="name">Name: A to Z</option>
-        </select>
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb-trail">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current" id="shop-breadcrumb">Shop Collections</span>
     </div>
-    <div class="filter-group">
-        <label>Max Price:</label>
-        <input type="range" id="price-range" min="0" max="10000" value="10000" oninput="applyFilters()">
-        <span id="price-display">₹10000</span>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+        <div class="filter-left">
+            <div class="filter-group">
+                <label>Line:</label>
+                <div class="category-buttons" id="category-buttons" style="margin:0;"></div>
+            </div>
+            <div class="filter-search-box">
+                <span class="filter-search-icon">🔍</span>
+                <input type="text" id="filter-search" placeholder="Search creations..." oninput="applyFilters()">
+            </div>
+            <div class="filter-group">
+                <label for="sort-select">Sort:</label>
+                <select id="sort-select" onchange="applyFilters()">
+                    <option value="default">Featured</option>
+                    <option value="newest">Newest First</option>
+                    <option value="low-high">Price: Low to High</option>
+                    <option value="high-low">Price: High to Low</option>
+                    <option value="name">Name: A to Z</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-right">
+            <div class="filter-group">
+                <label>Max Price:</label>
+                <input type="range" id="price-range" min="0" max="100000" step="500" value="100000" oninput="applyFilters()">
+                <span id="price-display">₹100,000</span>
+            </div>
+            <div class="filter-group">
+                <label>Sizes:</label>
+                <div class="size-filters">
+                    <span class="size-chip" data-size="S" onclick="toggleSizeFilter('S')">S</span>
+                    <span class="size-chip" data-size="M" onclick="toggleSizeFilter('M')">M</span>
+                    <span class="size-chip" data-size="L" onclick="toggleSizeFilter('L')">L</span>
+                    <span class="size-chip" data-size="XL" onclick="toggleSizeFilter('XL')">XL</span>
+                    <span class="size-chip" data-size="XXL" onclick="toggleSizeFilter('XXL')">XXL</span>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+
+    <!-- LEVEL 2 SUB-TYPES FILTER CHIPS -->
+    <div class="subtypes-filter-section" id="subtypes-section">
+        <span class="subtypes-filter-label">Sub-Category:</span>
+        <div class="type-chips-wrapper" id="subtypes-chips-container"></div>
+    </div>
+
+    <!-- PRODUCTS GRID -->
     <section class="products-container">
-        <h2 id="category-title">All Products</h2>
+        <h2 id="category-title" class="section-title">All Creations</h2>
         <div id="product-grid" class="product-grid"></div>
     </section>
 
-    <!-- Cart Modal -->
+    <!-- CART MODAL -->
     <div id="cart-modal" class="modal hidden">
         <div class="modal-content">
-            <span class="close" onclick="toggleCart()">&times;</span>
-            <h2>Your Cart</h2>
+            <button class="close" onclick="toggleCart()">&times;</button>
+            <h2 style="margin-bottom:20px;font-size:1.5rem;">Your Shopping Bag</h2>
             <div id="cart-items"></div>
-            <div id="cart-total">Total: ₹0</div>
-            <button onclick="checkout()">Proceed to Checkout</button>
+            <div class="cart-total" id="cart-total">Total: ₹0</div>
+            <button class="place-order-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
         </div>
     </div>
+
+    <!-- AUTH MODAL -->
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close" onclick="closeAuthModal()">&times;</button>
+            <div class="auth-tabs">
+                <button class="active" data-tab="login" onclick="switchAuthTab('login')">Login</button>
+                <button data-tab="signup" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+            <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+                <input type="text" id="login-email" placeholder="10-digit Mobile Number or Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <form id="signup-form" class="auth-form hidden" onsubmit="handleSignup(event)">
+                <input type="text" id="signup-name" placeholder="Full Name" required>
+                <input type="tel" id="signup-phone" placeholder="10-digit Mobile Number" pattern="[0-9]{10}" required>
+                <input type="email" id="signup-email" placeholder="Email Address" required>
+                <input type="password" id="signup-password" placeholder="Password (min 6 characters)" minlength="6" required>
+                <button type="submit">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h3>ABOUT VYBE</h3>
+                <p>We design, stitch, and deliver premium apparel. From everyday wear to signature tailored luxury.</p>
+            </div>
+            <div>
+                <h3>QUICK LINKS</h3>
+                <p><a href="shop.html">Shop All</a></p>
+                <p><a href="auction.html">Live Auctions</a></p>
+                <p><a href="track.html">Track Order</a></p>
+                <p><a href="account.html">My Account</a></p>
+            </div>
+            <div>
+                <h3>CONTACT</h3>
+                <p>Email: <a href="mailto:support@vybe.com" style="color:var(--primary-orange);">support@vybe.com</a></p>
+                <p>Phone: +91 9004844605</p>
+                <p>Karale House, Kongaon, Thane, Mumbai, 421311</p>
+            </div>
+        </div>
+        <p class="copyright">&copy; 2026 VYBE Men's Apparel. All rights reserved.</p>
+    </footer>
+
     <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+    // Handle URL parameters like ?cat=studio or ?cat=everyday
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const cat = urlParams.get('cat');
+        if (cat) {
+            setTimeout(() => {
+                if (typeof switchCategory === 'function') switchCategory(cat);
+            }, 300);
+        }
+    });
+    </script>
 </body>
 </html>
